@@ -90,6 +90,11 @@
   .summary-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
   .dot-red { background: var(--red); } .dot-amber { background: var(--amber); } .dot-green { background: var(--green); } .dot-blue { background: var(--blue); }
 
+  .filter-btn { padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); font-size: 0.68rem; font-family: 'DM Mono', monospace; cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: var(--blackberry); color: #fff; border-color: var(--blackberry); }
+  .visit.hidden { display: none; }
+  #search-visits:focus { border-color: var(--blackberry); }
+
   @media (max-width: 900px) { .main { grid-template-columns: 1fr; } .header-stats { margin-left: 0; } }
 </style>
 </head>
@@ -98,24 +103,68 @@
 <div class="header">
   <div class="header-title">
     <h1>Simba</h1>
-    <p>Pomeranian · Macho castrado · Historia clínica</p>
-  </div>
-  <div class="header-meta">
-    <span class="meta-chip">🐾 Pomeranian</span>
-    <span class="meta-chip">HermiVet · Agromédica · Groom Luxury</span>
-    <span class="meta-chip">Dic 2025 – May 2026</span>
+    <p>Pomeranian · Macho · Historia clínica</p>
   </div>
   <div class="header-stats">
-    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Visitas</div></div>
+    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Visitas</div></div>
     <div class="stat"><div class="stat-num">6</div><div class="stat-label">Hemogramas</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--amber)">⚠</div><div class="stat-label">Hígado ↑↑</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--red);font-size:1rem;padding-top:0.3rem">B2</div><div class="stat-label">Cardiopatía</div></div>
   </div>
 </div>
 
 <div class="main">
   <div>
     <div class="section-label">Cronología de exámenes · más reciente primero</div>
-    <div class="timeline">
+
+    <!-- FILTROS -->
+    <div style="margin-bottom:0.8rem;">
+      <input id="search-visits" type="text" placeholder="🔍 Buscar por clínica, fecha, hallazgo…" oninput="filterVisits()" style="width:100%;padding:0.45rem 0.8rem;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text);background:var(--surface);margin-bottom:0.5rem;outline:none;">
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+        <button class="filter-btn active" onclick="setFilter('all',this)">Todas</button>
+        <button class="filter-btn" onclick="setFilter('hemo',this)">Hemograma</button>
+        <button class="filter-btn" onclick="setFilter('quim',this)">Química</button>
+        <button class="filter-btn" onclick="setFilter('rx',this)">Rx</button>
+        <button class="filter-btn" onclick="setFilter('us',this)">Ultrasonido</button>
+        <button class="filter-btn" onclick="setFilter('cardio',this)">Cardiología</button>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline">
+
+      <!-- 9 -->
+      <div class="visit" onclick="toggleVisit(this)">
+        <div class="visit-dot" style="background:var(--red-pale);border-color:var(--red);color:var(--red);">09</div>
+        <div class="visit-card" style="border-color:rgba(192,57,43,0.3);">
+          <div class="visit-header">
+            <div class="visit-date">01/06/2026</div>
+            <div style="flex:1"><div class="visit-title">Ecocardiograma — Diagnóstico cardíaco</div><div class="visit-clinic">CardioCaré · Dra. Daniela Portilla Araya</div></div>
+            <div class="visit-tags">
+              <span class="tag tag-rx">Ecocardio</span>
+              <span class="tag tag-panel">Cardiología</span>
+            </div>
+            <span class="chevron">›</span>
+          </div>
+          <div class="visit-body">
+            <div class="sub-label">Diagnóstico</div>
+            <div class="finding alert" style="font-weight:600;"><span class="finding-icon">🫀</span><span><strong>Enfermedad valvular mitral estadio B2 (ACVIM)</strong> — Insuficiencia mitral y tricuspídea. Atrio izquierdo dilatado.</span></div>
+            <div class="sub-label">Hallazgos ecocardiográficos</div>
+            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Soplo grado 3/VI</strong> sistólico mitral y tricúspide. Regurgitación mitral severa: vel. 5.67 m/s, gradiente 128.7 mmHg.</span></div>
+            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Atrio izquierdo dilatado:</strong> LA/Ao 1.85 (ref. &lt;1.6). Dilatación confirmada.</span></div>
+            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Función sistólica normal:</strong> Fracción de eyección 76%, fracción acortamiento 43%.</span></div>
+            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Hipertensión pulmonar: probabilidad baja.</strong> Ventrículo derecho normal.</span></div>
+            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Campos pulmonares con crepitantes.</strong> FC: 62 bpm.</span></div>
+            <div class="sub-label">Tratamiento recetado</div>
+            <div class="finding info"><span class="finding-icon">💊</span><span><strong>Pimobendan 2.5 mg</strong> — 1/2 tableta cada 12 horas. Permanente.</span></div>
+            <div class="finding info"><span class="finding-icon">💊</span><span><strong>Maropitant 2 mg</strong> — 1/2 tableta cada 24 horas. Permanente (de noche).</span></div>
+            <div class="finding info"><span class="finding-icon">💨</span><span><strong>Nebulizaciones Pulmicort:</strong> 1 ml Pulmicort + 3 ml solución salina, 5–10 min. Cada 8h por 10 días, luego solo de noche.</span></div>
+            <div class="finding info"><span class="finding-icon">📅</span><span>Reevaluar en <strong>8 meses</strong>. Valorar antibiótico de amplio espectro.</span></div>
+            <div class="doc-buttons">
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1YHIEvg6vPYDcWkt6XoWt7jxCgWo8EkGa/view" target="_blank">📄 Informe cardiológico</a>
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1SYGUUWho5oEwgJIxb-h6LTTg3P0QVIfl/view" target="_blank">📄 Ecocardiograma (datos)</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- 8 -->
       <div class="visit" onclick="toggleVisit(this)">
@@ -483,38 +532,61 @@
     </div>
 
     <div class="summary-panel">
-      <div class="section-label">Resumen clínico · mayo 31, 2026</div>
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin:0 0 0.5rem;">✅ Resuelto</div>
-      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Infección bacteriana resuelta</strong> <span>— WBC normalizado. De leucocitosis severa (25.4) a 7.97–10.31 en 2 meses.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Enfermedades vectoriales:</strong> <span>Filaria, Lyme, Anaplasma, E. Canis → todos negativos ✅</span></div></div>
+      <div class="section-label">Resumen clínico · junio 2026</div>
 
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--red);margin:0.9rem 0 0.5rem;">🚨 Nuevo — Urgente</div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Daño hepático activo grave</strong> <span>— ALT 401 U/L (3× normal), ALP 319 U/L (1.5× normal). May 31. Requiere evaluación hepática urgente.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Anemia leve regresando</strong> <span>— HCT 36.8% ↓, HGB 12.9 ↓. Lab indica posible anemia no regenerativa. Monitorear.</span></div></div>
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--red);margin:0 0 0.5rem;">🫀 Diagnóstico cardíaco confirmado</div>
+      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>MMVD estadio B2 (ACVIM)</strong> <span>— Enfermedad valvular mitral. Atrio izquierdo dilatado (LA/Ao 1.85). Soplo grado 3/VI. Ecocardio: 01/jun/2026.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Pimobendan 2.5 mg</strong> <span>— 1/2 tableta cada 12h. <strong>Permanente.</strong></span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Maropitant 2 mg</strong> <span>— 1/2 tableta cada 24h de noche. Permanente.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Nebulizaciones Pulmicort</strong> <span>— 1ml + 3ml SF, cada 8h × 10 días, luego solo de noche.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Próxima cita cardiología</strong> <span>— Reevaluar en 8 meses (feb 2027).</span></div></div>
+
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--red);margin:0.9rem 0 0.5rem;">🚨 Urgente pendiente</div>
+      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Daño hepático activo</strong> <span>— ALT 401 U/L (3× normal), ALP 319 U/L. Biopsia o evaluación con internista pendiente.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Anemia leve recurrente</strong> <span>— HCT 36.8% ↓ (may 31). Monitorear en próximo hemograma.</span></div></div>
+
+      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin:0.9rem 0 0.5rem;">✅ Resuelto</div>
+      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Infección bacteriana resuelta</strong> <span>— WBC normalizado. Ancylostoma tratado.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Enfermedades vectoriales negativos</strong> <span>— Filaria, Lyme, Anaplasma, E. Canis ✅</span></div></div>
 
       <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--amber);margin:0.9rem 0 0.5rem;">⚠ En seguimiento</div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Inflamación crónica persistente</strong> <span>— Monocitos elevados en todos los hemogramas. Plaquetas 566 ↑.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Hígado</strong> <span>— Hepatomegalia + parénquima heterogéneo (ene 2026) + ALT/ALP muy elevados (may 2026). Biopsia pendiente urgente.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Hígado</strong> <span>— Hepatomegalia + parénquima heterogéneo + enzimas elevadas. Biopsia pendiente.</span></div></div>
       <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Daño renal senil</strong> <span>— Quistes corticales y mineralización distrófica bilateral.</span></div></div>
       <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Vesícula biliar / Próstata</strong> <span>— Barro biliar e hiperplasia prostática benigna.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Bajar de peso</strong> <span>— Peso 5 kg. Crítico para reducir carga cardíaca.</span></div></div>
 
       <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--blackberry);margin:0.9rem 0 0.5rem;">🦴 Crónico estructural</div>
-      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Espondilosis vertebral T5-T9</strong> <span>— Grado 2/3 + listesis L5-L6. Manejo de dolor crónico.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Traqueomalasia posible</strong> <span>— Tráquea estrecha. Evaluar síntomas respiratorios.</span></div></div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--red);margin:0.9rem 0 0.5rem;">⚡ Pendiente prioritario</div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Evaluación hepática urgente</strong> <span>— ALT 401 es una señal de alarma. Biopsia, ecografía de seguimiento o internista.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Cardiología pendiente</strong> <span>— Soplo cardíaco + corazón en límite superior (Rx). Consulta urgente.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Bajar de peso</strong> <span>— Peso actual 4.8 kg. Clave para reducir carga cardíaca, hepática y articular.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Espondilosis vertebral T5-T9</strong> <span>— Grado 2/3 + listesis L5-L6.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Traqueomalasia posible</strong> <span>— Tráquea estrecha. Monitorear síntomas respiratorios.</span></div></div>
     </div>
   </div>
 </div>
 
 <script>
+  let activeFilter = 'all';
+
   function toggleVisit(el) {
     const wasActive = el.classList.contains('active');
     document.querySelectorAll('.visit').forEach(v => v.classList.remove('active'));
     if (!wasActive) el.classList.add('active');
+  }
+
+  function setFilter(type, btn) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterVisits();
+  }
+
+  function filterVisits() {
+    const q = document.getElementById('search-visits').value.toLowerCase();
+    document.querySelectorAll('.visit').forEach(v => {
+      const text = v.innerText.toLowerCase();
+      const tags = v.querySelector('.visit-tags') ? v.querySelector('.visit-tags').innerHTML.toLowerCase() : '';
+      const matchesFilter = activeFilter === 'all' || tags.includes('tag-' + activeFilter) || (activeFilter === 'cardio' && tags.includes('cardio'));
+      const matchesSearch = q === '' || text.includes(q);
+      v.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
   }
   function showHemo(id, btn) {
     document.querySelectorAll('.hemo-content').forEach(c => c.classList.remove('active'));
