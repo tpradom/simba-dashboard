@@ -106,8 +106,8 @@
     <p>Pomeranian · Macho · Historia clínica</p>
   </div>
   <div class="header-stats">
-    <div class="stat"><div class="stat-num">10</div><div class="stat-label">Visitas</div></div>
-    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Hemogramas</div></div>
+    <div class="stat"><div class="stat-num">11</div><div class="stat-label">Visitas</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Hemogramas</div></div>
     <div class="stat"><div class="stat-num" style="color:var(--red);font-size:1rem;padding-top:0.3rem">B2</div><div class="stat-label">Cardiopatía</div></div>
   </div>
 </div>
@@ -130,6 +130,36 @@
     </div>
 
     <div class="timeline" id="timeline">
+
+      <!-- 11 -->
+      <div class="visit" onclick="toggleVisit(this)">
+        <div class="visit-dot" style="background:var(--red-pale);border-color:var(--red);color:var(--red);">11</div>
+        <div class="visit-card" style="border-color:rgba(192,57,43,0.3);">
+          <div class="visit-header">
+            <div class="visit-date">13/06/2026</div>
+            <div style="flex:1"><div class="visit-title">Hemograma + Rx Tórax — Control post-internamiento</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dra. Valeria Arias</div></div>
+            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-rx">Rx</span></div>
+            <span class="chevron">›</span>
+          </div>
+          <div class="visit-body">
+            <div class="sub-label">Fórmula Roja</div>
+            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>Anemia persistente:</strong> HCT 34.4% ↓ (ref. 37.3–61.7%), HGB 11.9 ↓, RBC 5.34 ↓. Sin reticulocitosis — anemia no regenerativa.</span></div>
+            <div class="sub-label">Fórmula Blanca</div>
+            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>WBC 12.01 ✓</strong> — normalizado y estable. Neutrófilos 8.75 ✓, Linfocitos 2.35 ✓.</span></div>
+            <div class="sub-label">Plaquetas ⚠</div>
+            <div class="finding alert"><span class="finding-icon">↑↑↑</span><span><strong>Trombocitosis severa: PLT 700</strong> (ref. 148–484). Plateletcrit 0.89% ↑↑. Salto desde 214 el 3 jun en solo 10 días.</span></div>
+            <div class="sub-label">Radiografías de Tórax (3 proyecciones)</div>
+            <div class="finding alert"><span class="finding-icon">🫀</span><span><strong>Cardiomegalia:</strong> Silueta cardíaca aumentada en todas las proyecciones, forma globoide en laterales. Compatible con MMVD activo.</span></div>
+            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Desplazamiento dorsal de tráquea</strong> en vistas laterales — signo de agrandamiento de aurícula izquierda (LA).</span></div>
+            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Sin edema pulmonar:</strong> Campos pulmonares sin patrón alveolar difuso. Pulmones limpios.</span></div>
+            <div class="finding info"><span class="finding-icon">ℹ</span><span><strong>Hepatomegalia visible</strong> en vista lateral — sobresale del margen costal. Consistente con ultrasonido de enero.</span></div>
+            <div class="doc-buttons">
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/11jgmkDezixV_-1IQROm-MNiNIVbAZ3_l/view" target="_blank">📄 Hemograma Jun 13</a>
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/14KM1Yp9C_Cm0mx_UcK45vGqLbwWe7dQo/view" target="_blank">🩻 Rx Tórax Jun 13</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- 10 -->
       <div class="visit" onclick="toggleVisit(this)">
@@ -199,8 +229,8 @@
         <div class="visit-card" style="border-color:rgba(181,98,10,0.3);">
           <div class="visit-header">
             <div class="visit-date">31/05/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Química sanguínea</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dr. Ashley Mena Vindas</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span></div>
+            <div style="flex:1"><div class="visit-title">Hemograma + Química + Rx Tórax</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dr. Ashley Mena Vindas</div></div>
+            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span><span class="tag tag-rx">Rx</span></div>
             <span class="chevron">›</span>
           </div>
           <div class="visit-body">
@@ -216,7 +246,10 @@
             <div class="finding alert"><span class="finding-icon">↑↑</span><span><strong>ALT 401 U/L</strong> (ref. 10–125) — 3× el límite superior. Daño hepático activo significativo.</span></div>
             <div class="finding alert"><span class="finding-icon">↑↑</span><span><strong>ALP 319 U/L</strong> (ref. 23–212) — 1.5× el límite. Confirma compromiso hepático/biliar activo.</span></div>
             <div class="finding ok"><span class="finding-icon">✓</span><span>Glucosa, creatinina, BUN, proteínas, albúmina y globulina dentro de rangos normales.</span></div>
-            <div class="doc-buttons"><a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1MRHPdJOkVkaiQw1BJqOjqYyMgTpjN3_Q/view" target="_blank">📄 Hemograma + Química May 31</a></div>
+            <div class="doc-buttons">
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1MRHPdJOkVkaiQw1BJqOjqYyMgTpjN3_Q/view" target="_blank">📄 Hemograma + Química May 31</a>
+              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1UZYevxivyjXlXiQOyXSQkE1Sv1uD5fRy/view" target="_blank">🩻 Rx Tórax May 31</a>
+            </div>
           </div>
         </div>
       </div>
@@ -399,7 +432,8 @@
     <div class="hemo-panel">
       <div class="hemo-title"><span style="font-size:1rem">◈</span><h3>Comparativa de Hemogramas</h3></div>
       <div class="hemo-selector">
-        <button class="hemo-btn active" onclick="showHemo('h7',this)" style="background:rgba(181,98,10,0.08);color:var(--amber);font-weight:600;">Jun 3 ⚠</button>
+        <button class="hemo-btn active" onclick="showHemo('h8',this)" style="background:rgba(192,57,43,0.08);color:var(--red);font-weight:600;">Jun 13 ⚠</button>
+        <button class="hemo-btn" onclick="showHemo('h7',this)">Jun 3</button>
         <button class="hemo-btn" onclick="showHemo('h6',this)">May 31</button>
         <button class="hemo-btn" onclick="showHemo('h5',this)">May 9</button>
         <button class="hemo-btn" onclick="showHemo('h4',this)">Mar 21</button>
@@ -480,7 +514,23 @@
         <div class="hemo-row"><span class="hemo-param">P-LCC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:72%"></div></div><span class="hemo-val high">188 ↑</span></div>
       </div>
 
-      <div class="hemo-content active" id="h7">
+      <div class="hemo-content active" id="h8">
+        <div style="font-size:0.65rem;color:var(--red);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">13 jun 2026 · IntensiVet · Dra. Valeria Arias ⚠ PLT 700</div>
+        <div class="hemo-sub">Fórmula Roja</div>
+        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:62%"></div></div><span class="hemo-val low">5.34 ↓</span></div>
+        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:58%"></div></div><span class="hemo-val low">11.9 ↓</span></div>
+        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:56%"></div></div><span class="hemo-val low">34.4% ↓</span></div>
+        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:53%"></div></div><span class="hemo-val normal">64.4 fL ✓</span></div>
+        <div class="hemo-sub">Fórmula Blanca</div>
+        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:47%"></div></div><span class="hemo-val normal">12.01 ✓</span></div>
+        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:65%"></div></div><span class="hemo-val normal">8.75 ✓</span></div>
+        <div class="hemo-row"><span class="hemo-param">LYM#</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:45%"></div></div><span class="hemo-val normal">2.35 ✓</span></div>
+        <div class="hemo-sub">Plaquetas ⚠</div>
+        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:95%"></div></div><span class="hemo-val high">700 ↑↑↑</span></div>
+        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:90%"></div></div><span class="hemo-val high">0.89% ↑↑</span></div>
+      </div>
+
+      <div class="hemo-content" id="h7">
         <div style="font-size:0.65rem;color:var(--amber);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">03 jun 2026 · IntensiVet · Dra. Gloriana Chinchilla ⚠ Internado</div>
         <div class="hemo-sub">Fórmula Roja</div>
         <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:60%"></div></div><span class="hemo-val low">5.30 ↓</span></div>
@@ -537,7 +587,7 @@
     <div class="trend-panel">
       <div class="trend-title"><span style="font-size:1rem">↗</span><h3>Tendencias</h3></div>
       <div class="trend-chart">
-        <div class="trend-label"><span>HCT %</span><span style="color:var(--red);font-weight:700;">↓ Bajando</span></div>
+        <div class="trend-label"><span>HCT %</span><span style="color:var(--amber);font-weight:700;">↓ Baja persistente</span></div>
         <div class="trend-bars">
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:29%;background:var(--red)"></div><div class="trend-dot">29.2</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:31%;background:var(--red)"></div><div class="trend-dot">30.5</div></div>
@@ -546,11 +596,12 @@
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:40%;background:var(--green)"></div><div class="trend-dot">39.6</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:37%;background:var(--amber)"></div><div class="trend-dot">36.8</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:33%;background:var(--red)"></div><div class="trend-dot">33.4</div></div>
+          <div class="trend-bar-wrap"><div class="trend-bar" style="height:35%;background:var(--amber)"></div><div class="trend-dot">34.4</div></div>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div></div>
+        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
       </div>
       <div class="trend-chart">
-        <div class="trend-label"><span>WBC (glóbulos blancos)</span><span style="color:var(--amber);font-weight:700;">↑ Subiendo</span></div>
+        <div class="trend-label"><span>WBC (glóbulos blancos)</span><span style="color:var(--green);font-weight:700;">✓ Normalizando</span></div>
         <div class="trend-bars">
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:43%;background:var(--green)"></div><div class="trend-dot">10.9</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:26%;background:var(--green)"></div><div class="trend-dot">6.49</div></div>
@@ -559,11 +610,12 @@
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:32%;background:var(--green)"></div><div class="trend-dot">7.97</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:41%;background:var(--green)"></div><div class="trend-dot">10.31</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:60%;background:var(--amber)"></div><div class="trend-dot">15.08</div></div>
+          <div class="trend-bar-wrap"><div class="trend-bar" style="height:47%;background:var(--green)"></div><div class="trend-dot">12.01</div></div>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div></div>
+        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
       </div>
       <div class="trend-chart">
-        <div class="trend-label"><span>PLT (plaquetas)</span><span style="color:var(--green);font-weight:700;">✓ Normalizaron</span></div>
+        <div class="trend-label"><span>PLT (plaquetas)</span><span style="color:var(--red);font-weight:700;">↑↑↑ Trombocitosis</span></div>
         <div class="trend-bars">
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:56%;background:var(--green)"></div><div class="trend-dot">435</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:89%;background:var(--red)"></div><div class="trend-dot">694</div></div>
@@ -572,8 +624,9 @@
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:70%;background:var(--amber)"></div><div class="trend-dot">547</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:73%;background:var(--amber)"></div><div class="trend-dot">566</div></div>
           <div class="trend-bar-wrap"><div class="trend-bar" style="height:27%;background:var(--green)"></div><div class="trend-dot">214</div></div>
+          <div class="trend-bar-wrap"><div class="trend-bar" style="height:90%;background:var(--red)"></div><div class="trend-dot">700</div></div>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div></div>
+        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
       </div>
     </div>
 
@@ -641,7 +694,8 @@
 
       <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--amber);margin:0.9rem 0 0.5rem;">⚠ Monitorear</div>
       <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Hígado en recuperación</strong> <span>— ALT 401, ALP 319 (may 31). Daño regenerativo según médico, consistente con ultrasonido de marzo. Recibe hepatoprotector. Verificar enzimas en próximo control.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Anemia leve recurrente</strong> <span>— HCT 36.8% ↓ (may 31). Monitorear en próximo hemograma.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Anemia no regenerativa persistente</strong> <span>— HCT 34.4% ↓ (jun 13). Sin reticulocitosis. Monitorear con próximo hemograma.</span></div></div>
+      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Trombocitosis severa: PLT 700 ↑↑↑</strong> <span>— Salto desde 214 (jun 3) a 700 (jun 13). Probablemente reactiva (inflamación / hígado). Vigilar.</span></div></div>
 
       <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin:0.9rem 0 0.5rem;">✅ Resuelto</div>
       <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Infección bacteriana resuelta</strong> <span>— WBC normalizado. Ancylostoma tratado.</span></div></div>
