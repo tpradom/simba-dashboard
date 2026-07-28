@@ -3,749 +3,1377 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Médico · Simba</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Simba · Historia Clínica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blackberry: #542344; --pale-sky: #bfd1e5; --mint-cream: #ebf5ee;
-    --desert-sand: #d8bfaa; --surface: #ffffff; --bg: #f7f4f2;
-    --border: #e2d9d4; --text: #2c1a26; --text-muted: #7a6270;
-    --green: #2e7d51; --green-pale: #ebf5ee;
-    --amber: #b5620a; --amber-pale: #fef3e2;
-    --red: #c0392b; --red-pale: #fdecea;
-    --blue: #1a5276; --blue-pale: #eaf1fb;
+/* ─────────────────────────────────────────────────────────────────
+   ASTRYX NEUTRAL THEME — design tokens (approximated)
+   https://astryx.atmeta.com / github.com/facebook/astryx
+───────────────────────────────────────────────────────────────── */
+:root {
+  /* Background scale */
+  --color-background-body:       #f3f2ef;
+  --color-background-surface:    #ffffff;
+  --color-background-card:       #ffffff;
+  --color-background-subtle:     #f9f8f7;
+  --color-background-muted:      #f0efec;
+
+  /* Text scale */
+  --color-text-primary:          #111111;
+  --color-text-secondary:        #5e5e5e;
+  --color-text-tertiary:         #909090;
+  --color-text-disabled:         #c4c4c4;
+  --color-text-inverse:          #ffffff;
+
+  /* Border */
+  --color-border:                #e2e0db;
+  --color-border-emphasized:     #c9c7c0;
+  --color-border-focus:          #0062d4;
+
+  /* Status — backgrounds */
+  --color-bg-success:   #e8f5ec;
+  --color-bg-warning:   #fef5e3;
+  --color-bg-error:     #fee8e7;
+  --color-bg-info:      #e8f0fe;
+
+  /* Status — text */
+  --color-text-success: #14532d;
+  --color-text-warning: #713f12;
+  --color-text-error:   #7f1d1d;
+  --color-text-info:    #1e3a8a;
+
+  /* Status — icon/border */
+  --color-success:      #16a34a;
+  --color-warning:      #ca8a04;
+  --color-error:        #dc2626;
+  --color-info:         #2563eb;
+
+  /* Hue palette (blue) — link / primary action */
+  --color-blue-vivid:   #0062d4;
+  --color-blue-subtle:  #e8f0fe;
+
+  /* Radius scale — --radius-inner, --radius-element, --radius-container */
+  --radius-inner:     4px;
+  --radius-element:   8px;
+  --radius-container: 12px;
+  --radius-pill:      999px;
+
+  /* Shadow scale */
+  --shadow-low:  0 1px 2px rgba(0,0,0,.05), 0 1px 3px rgba(0,0,0,.06);
+  --shadow-med:  0 2px 8px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-high: 0 4px 20px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.05);
+
+  /* Spacing (4px base unit — --spacing-N = N×4px) */
+  --sp1: 4px; --sp2: 8px; --sp3: 12px; --sp4: 16px;
+  --sp5: 20px; --sp6: 24px; --sp8: 32px; --sp10: 40px;
+
+  /* Sidebar — removed */
+
+  /* Brand accent (blackberry) — kept for Simba branding only */
+  --brand: #542344;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  background: var(--color-background-body);
+  color: var(--color-text-primary);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ───────────────────────────────────────────────── */
+.app {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  overflow: hidden;
+  background: var(--color-background-body);
+}
+
+/* ── CENTER ──────────────────────────────────────────────────── */
+.center {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border);
+}
+
+/* Topbar */
+.topbar {
+  padding: var(--sp5) var(--sp5) var(--sp4);
+  background: var(--color-background-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.topbar-eyebrow {
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: var(--sp1);
+}
+.topbar h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  line-height: 1.15;
+}
+.topbar-meta {
+  font-size: .68rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--sp1);
+  font-family: 'DM Mono', monospace;
+}
+.search-row {
+  display: flex; gap: var(--sp2);
+  align-items: center;
+  margin-top: var(--sp4);
+}
+/* XDS-style Input */
+.xds-input {
+  display: flex; align-items: center; gap: var(--sp2);
+  background: var(--color-background-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-element);
+  padding: var(--sp2) var(--sp3);
+  flex: 1;
+  transition: border-color .15s, box-shadow .15s;
+}
+.xds-input:focus-within {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(0,98,212,.12);
+  background: var(--color-background-surface);
+}
+.xds-input input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .75rem;
+  color: var(--color-text-primary);
+  outline: none;
+}
+.xds-input input::placeholder { color: var(--color-text-tertiary); }
+.xds-input svg { opacity: .45; flex-shrink: 0; }
+
+/* Filter pills — XDS SegmentedControl style */
+.pills { display: flex; gap: var(--sp1); flex-wrap: wrap; }
+.pill {
+  padding: var(--sp1) var(--sp3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-background-surface);
+  color: var(--color-text-secondary);
+  font-size: .65rem;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .12s;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--color-border-emphasized); color: var(--color-text-primary); }
+.pill.on {
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-text-primary);
+}
+
+/* Stat strip */
+.stat-strip {
+  display: flex;
+  background: var(--color-background-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.sc {
+  flex: 1;
+  padding: var(--sp3) var(--sp4);
+  border-right: 1px solid var(--color-border);
+}
+.sc:last-child { border-right: none; }
+.sc-n {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-text-primary);
+}
+.sc-n.err   { color: var(--color-error); }
+.sc-n.warn  { color: var(--color-warning); font-size: 1rem; padding-top: .35rem; }
+.sc-label {
+  font-size: .59rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-text-tertiary);
+  margin-top: var(--sp1);
+}
+
+/* Alert cards — XDS AlertCard */
+.alert-strip {
+  display: flex; gap: var(--sp3);
+  padding: var(--sp3) var(--sp4);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  overflow-x: auto;
+  background: var(--color-background-surface);
+}
+.alert-strip::-webkit-scrollbar { height: 0; }
+.ac {
+  min-width: 152px; flex: 1;
+  border-radius: var(--radius-container);
+  padding: var(--sp3) var(--sp4);
+  border-width: 1px; border-style: solid;
+}
+.ac-error   { background: var(--color-bg-error);   border-color: rgba(220,38,38,.18);  }
+.ac-warning { background: var(--color-bg-warning); border-color: rgba(202,138,4,.18);  }
+.ac-success { background: var(--color-bg-success); border-color: rgba(22,163,74,.18);  }
+.ac-info    { background: var(--color-bg-info);    border-color: rgba(37,99,235,.18);  }
+.ac-chip {
+  display: inline-flex; align-items: center; gap: var(--sp1);
+  font-size: .56rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  font-family: 'DM Mono', monospace;
+  padding: 1px var(--sp2);
+  border-radius: var(--radius-inner);
+  margin-bottom: var(--sp2);
+}
+.ac-error .ac-chip   { background: rgba(220,38,38,.12); color: var(--color-error); }
+.ac-warning .ac-chip { background: rgba(202,138,4,.12); color: var(--color-warning); }
+.ac-success .ac-chip { background: rgba(22,163,74,.12); color: var(--color-success); }
+.ac-info .ac-chip    { background: rgba(37,99,235,.12); color: var(--color-info); }
+.ac-title {
+  font-size: .79rem; font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+.ac-error .ac-title   { color: var(--color-text-error); }
+.ac-warning .ac-title { color: var(--color-text-warning); }
+.ac-success .ac-title { color: var(--color-text-success); }
+.ac-info .ac-title    { color: var(--color-text-info); }
+.ac-sub {
+  font-size: .66rem;
+  opacity: .7;
+  margin-top: var(--sp1);
+  line-height: 1.4;
+}
+
+/* ── TIMELINE ────────────────────────────────────────────────── */
+.tl-wrap {
+  flex: 1; overflow-y: auto;
+  padding: var(--sp4) var(--sp4) var(--sp6);
+}
+.tl-wrap::-webkit-scrollbar { width: 3px; }
+.tl-wrap::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+.tl-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp3);
+  margin-bottom: var(--sp3);
+  flex-wrap: wrap;
+}
+.tl-header {
+  font-size: .58rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+.visit { margin-bottom: var(--sp2); }
+.visit.hidden { display: none; }
+
+/* XDS Card — row style */
+.v-row {
+  display: flex; align-items: center;
+  gap: var(--sp3);
+  background: var(--color-background-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-container);
+  padding: var(--sp3) var(--sp4);
+  cursor: pointer;
+  transition: box-shadow .15s, border-color .15s;
+  box-shadow: var(--shadow-low);
+}
+.v-row:hover {
+  box-shadow: var(--shadow-med);
+  border-color: var(--color-border-emphasized);
+}
+.visit.open .v-row {
+  border-radius: var(--radius-container) var(--radius-container) 0 0;
+  border-bottom-color: var(--color-background-muted);
+  box-shadow: none;
+}
+
+/* XDS Badge (number) */
+.v-badge {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border-radius: var(--radius-element);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; font-weight: 700;
+  border: 1px solid var(--color-border);
+  background: var(--color-background-muted);
+  color: var(--color-text-secondary);
+}
+
+.v-body { flex: 1; min-width: 0; }
+.v-title {
+  font-size: .76rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--color-text-primary);
+}
+.v-clinic {
+  font-size: .64rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.v-right {
+  display: flex; flex-direction: column;
+  align-items: flex-end; gap: var(--sp1); flex-shrink: 0;
+}
+.v-date {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  color: var(--color-text-tertiary);
+}
+.v-tags { display: flex; gap: 3px; }
+
+/* XDS Tag / Badge */
+.tag {
+  font-size: .55rem; font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  padding: 1px var(--sp2);
+  border-radius: var(--radius-inner);
+  letter-spacing: .04em;
+}
+.tag-hemo, .tag-quim, .tag-rx, .tag-us, .tag-card, .tag-hec {
+  background: var(--color-background-muted);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.v-chev {
+  color: var(--color-text-tertiary);
+  font-size: .85rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.visit.open .v-chev { transform: rotate(90deg); }
+
+/* Visit detail panel — XDS Card body */
+.v-detail {
+  display: none;
+  background: var(--color-background-card);
+  border: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-background-muted);
+  border-radius: 0 0 var(--radius-container) var(--radius-container);
+  padding: var(--sp3) var(--sp4) var(--sp4);
+  box-shadow: var(--shadow-low);
+}
+.visit.open .v-detail { display: block; }
+
+.sub-label {
+  font-size: .56rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--color-text-tertiary);
+  margin: var(--sp4) 0 var(--sp2);
+}
+.sub-label:first-child { margin-top: 0; }
+
+/* XDS InlineAlert / finding row */
+.finding {
+  display: flex; gap: var(--sp2); align-items: flex-start;
+  font-size: .72rem;
+  line-height: 1.45;
+  padding: var(--sp2) var(--sp3);
+  border-radius: var(--radius-element);
+  margin-bottom: var(--sp1);
+  border-width: 1px; border-style: solid;
+}
+.finding.f-error   { background: var(--color-bg-error);   border-color: rgba(220,38,38,.15);  color: var(--color-text-error); }
+.finding.f-warning { background: var(--color-bg-warning); border-color: rgba(202,138,4,.15);  color: var(--color-text-warning); }
+.finding.f-success { background: var(--color-bg-success); border-color: rgba(22,163,74,.15);  color: var(--color-text-success); }
+.finding.f-info    { background: var(--color-bg-info);    border-color: rgba(37,99,235,.15);  color: var(--color-text-info); }
+.finding-icon { font-weight: 700; flex-shrink: 0; font-size: .8rem; line-height: 1.45; }
+
+/* XDS Button — ghost/outline style */
+.doc-buttons { display: flex; gap: var(--sp2); flex-wrap: wrap; margin-top: var(--sp4); }
+.doc-btn {
+  display: inline-flex; align-items: center; gap: var(--sp2);
+  padding: var(--sp1) var(--sp3);
+  border-radius: var(--radius-element);
+  font-size: .64rem;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .12s;
+  border-width: 1px; border-style: solid;
+}
+.doc-btn:hover { box-shadow: var(--shadow-low); }
+.doc-btn-pdf {
+  background: var(--color-background-muted);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+.doc-btn-pdf:hover { background: var(--color-background-subtle); border-color: var(--color-border-emphasized); color: var(--color-text-primary); }
+
+/* ── RIGHT PANEL ─────────────────────────────────────────────── */
+.right {
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: var(--color-background-surface);
+}
+
+/* ── MOBILE DRAWER ───────────────────────────────────────────── */
+.mob-trigger { display: none; }
+.drawer-close { display: none; }
+.drawer-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 99;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+
+  /* Right panel → slide-in drawer */
+  .right {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(360px, 93vw);
+    height: 100dvh;
+    z-index: 100;
+    transform: translateX(110%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow: var(--shadow-high);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+  .right.open { transform: translateX(0); }
 
-  .header { background: var(--pale-sky); padding: 1.4rem 2rem; border-bottom: 2px solid #a8c0d8; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
-  .header-title h1 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--blackberry); }
-  .header-title p { font-size: 0.78rem; color: #4a3558; margin-top: 0.2rem; font-family: 'DM Mono', monospace; }
-  .header-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .meta-chip { background: rgba(84,35,68,0.1); color: var(--blackberry); border: 1px solid rgba(84,35,68,0.2); border-radius: 20px; padding: 0.2rem 0.8rem; font-size: 0.72rem; font-weight: 500; font-family: 'DM Mono', monospace; }
-  .header-stats { margin-left: auto; display: flex; gap: 1.5rem; }
-  .stat { text-align: center; }
-  .stat-num { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--blackberry); line-height: 1; }
-  .stat-label { font-size: 0.65rem; color: #4a3558; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  /* Overlay */
+  .drawer-overlay {
+    display: block;
+  }
+  .drawer-overlay.show { opacity: 1; pointer-events: all; }
 
-  .main { display: grid; grid-template-columns: 1fr 420px; gap: 1.5rem; padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
-  .section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blackberry); margin-bottom: 0.8rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--pale-sky); }
+  /* Trigger button in topbar */
+  .mob-trigger {
+    display: flex; align-items: center; gap: var(--sp2);
+    padding: var(--sp2) var(--sp3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-element);
+    background: var(--color-background-surface);
+    color: var(--color-text-secondary);
+    font-size: .68rem;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer; flex-shrink: 0;
+    transition: border-color .12s, color .12s;
+  }
+  .mob-trigger:hover { border-color: var(--color-border-emphasized); color: var(--color-text-primary); }
 
-  .timeline { display: flex; flex-direction: column; gap: 0.7rem; }
-  .visit { display: flex; gap: 0.8rem; cursor: pointer; align-items: flex-start; }
-  .visit-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--desert-sand); border: 2px solid #b8a090; color: var(--blackberry); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; margin-top: 0.3rem; }
-  .visit-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s; }
-  .visit-card:hover { box-shadow: 0 2px 10px rgba(84,35,68,0.1); }
-  .visit-header { display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 1rem; flex-wrap: wrap; }
-  .visit-date { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--blackberry); font-weight: 600; white-space: nowrap; }
-  .visit-title { font-size: 0.82rem; font-weight: 600; }
-  .visit-clinic { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem; }
-  .visit-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
-  .tag { font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 10px; font-weight: 600; font-family: 'DM Mono', monospace; }
-  .tag-hemo { background: #e8f0fd; color: #1a5276; } .tag-quim { background: #fef3e2; color: #b5620a; }
-  .tag-rx { background: #f3e8fd; color: #542344; } .tag-us { background: #e8fdf3; color: #1a7a4a; }
-  .tag-panel { background: #fde8e8; color: #c0392b; } .tag-heces { background: #f5f0e8; color: #6b4a1a; }
-  .chevron { font-size: 1.2rem; color: var(--text-muted); transition: transform 0.2s; margin-left: auto; }
-  .visit.active .chevron { transform: rotate(90deg); }
-  .visit-body { display: none; padding: 0 1rem 0.8rem; border-top: 1px solid var(--border); }
-  .visit.active .visit-body { display: block; padding-top: 0.75rem; }
-  .sub-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blackberry); margin: 0.7rem 0 0.35rem; }
-  .finding { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.76rem; margin-bottom: 0.3rem; line-height: 1.45; padding: 0.35rem 0.6rem; border-radius: 6px; }
-  .finding.alert { background: var(--red-pale); color: #7a1a10; } .finding.warn { background: var(--amber-pale); color: #7a3e05; }
-  .finding.ok { background: var(--green-pale); color: #1a5232; } .finding.info { background: var(--blue-pale); color: #1a3a5c; }
-  .finding-icon { font-weight: 700; flex-shrink: 0; }
-  .doc-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-  .doc-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.7rem; font-family: 'DM Mono', monospace; font-weight: 500; text-decoration: none; transition: opacity 0.15s; }
-  .doc-btn:hover { opacity: 0.8; }
-  .doc-btn-pdf { background: #fdecea; color: #c0392b; border: 1px solid #f5c6c2; }
-  .doc-btn-img { background: var(--blue-pale); color: var(--blue); border: 1px solid #c5d8f0; }
+  /* Close row inside drawer */
+  .drawer-close {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--sp3) var(--sp4);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+  .drawer-close-label {
+    font-size: .65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .07em;
+    color: var(--color-text-tertiary);
+    font-family: 'DM Mono', monospace;
+  }
+  .drawer-close-btn {
+    width: 28px; height: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-element);
+    background: var(--color-background-subtle);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--color-text-secondary);
+    transition: all .12s;
+  }
+  .drawer-close-btn:hover { background: var(--color-background-muted); color: var(--color-text-primary); }
 
-  .right-panel { display: flex; flex-direction: column; gap: 1.2rem; }
-  .hemo-panel, .trend-panel, .summary-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.2rem; box-shadow: 0 1px 3px rgba(84,35,68,0.06); }
-  .hemo-title, .trend-title { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; }
-  .hemo-title h3, .trend-title h3 { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--blackberry); }
-  .hemo-selector { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-  .hemo-btn { padding: 0.25rem 0.7rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); font-size: 0.7rem; font-family: 'DM Mono', monospace; cursor: pointer; transition: all 0.15s; }
-  .hemo-btn.active { background: var(--blackberry); color: #fff; border-color: var(--blackberry); }
-  .hemo-content { display: none; } .hemo-content.active { display: block; }
-  .hemo-sub { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blackberry); margin: 0.6rem 0 0.35rem; }
-  .hemo-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem; }
-  .hemo-param { font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 600; width: 52px; flex-shrink: 0; }
-  .hemo-bar-wrap { flex: 1; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
-  .hemo-bar { height: 100%; border-radius: 3px; }
-  .hemo-bar.low { background: var(--red); } .hemo-bar.normal { background: var(--green); } .hemo-bar.high { background: var(--amber); }
-  .hemo-val { font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
-  .hemo-val.low { color: var(--red); } .hemo-val.normal { color: var(--green); } .hemo-val.high { color: var(--amber); }
+  /* Topbar: stack on mobile */
+  .search-row { flex-wrap: wrap; }
+}
 
-  .trend-chart { margin-bottom: 0.9rem; }
-  .trend-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
-  .trend-bars { display: flex; align-items: flex-end; gap: 4px; height: 50px; }
-  .trend-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .trend-bar { width: 100%; border-radius: 3px 3px 0 0; }
-  .trend-dot { font-size: 0.55rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
-  .trend-xlab { display: flex; gap: 4px; margin-top: 4px; }
-  .trend-xl { flex: 1; text-align: center; font-size: 0.55rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+/* XDS TabBar */
+.r-tabbar {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--sp3);
+  flex-shrink: 0;
+  background: var(--color-background-surface);
+}
+.rtab {
+  flex: 1;
+  padding: var(--sp3) var(--sp2);
+  border: none; background: transparent;
+  font-size: .67rem;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .12s, border-color .12s;
+}
+.rtab:hover { color: var(--color-text-primary); }
+.rtab.on {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--color-text-primary);
+}
 
-  .summary-item { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.65rem; font-size: 0.78rem; line-height: 1.5; }
-  .summary-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-  .dot-red { background: var(--red); } .dot-amber { background: var(--amber); } .dot-green { background: var(--green); } .dot-blue { background: var(--blue); }
+.r-pane { display: none; flex: 1; overflow-y: auto; padding: var(--sp4); }
+.r-pane::-webkit-scrollbar { width: 3px; }
+.r-pane::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+.r-pane.on { display: block; }
+.r-section-title {
+  font-size: .6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--sp3);
+}
 
-  .filter-btn { padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); font-size: 0.68rem; font-family: 'DM Mono', monospace; cursor: pointer; transition: all 0.15s; }
-  .filter-btn.active { background: var(--blackberry); color: #fff; border-color: var(--blackberry); }
-  .visit.hidden { display: none; }
-  #search-visits:focus { border-color: var(--blackberry); }
+/* ── HEMOGRAMA ────────────────────────────────────────────────── */
+.h-tabs { display: flex; gap: var(--sp1); flex-wrap: wrap; margin-bottom: var(--sp4); }
+.htab {
+  padding: 2px var(--sp3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-background-subtle);
+  color: var(--color-text-secondary);
+  font-size: .62rem;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  transition: all .12s;
+}
+.htab:hover { border-color: var(--color-border-emphasized); }
+.htab.on {
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-text-primary);
+}
+.htab.on.warn { background: var(--color-error); border-color: var(--color-error); }
 
-  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } .header-stats { margin-left: 0; } }
+.hc { display: none; }
+.hc.on { display: block; }
+.h-meta {
+  font-size: .59rem; color: var(--color-text-tertiary);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: var(--sp4);
+  padding: var(--sp2) var(--sp3);
+  background: var(--color-background-subtle);
+  border-radius: var(--radius-element);
+  border: 1px solid var(--color-border);
+}
+.h-section {
+  font-size: .56rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--color-text-tertiary);
+  margin: var(--sp4) 0 var(--sp2);
+}
+.h-row {
+  display: flex; align-items: center; gap: var(--sp2);
+  margin-bottom: var(--sp2);
+}
+.h-name {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem; font-weight: 600;
+  width: 44px; flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+.h-track {
+  flex: 1; height: 4px;
+  background: var(--color-background-muted);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.h-bar { height: 100%; border-radius: var(--radius-pill); }
+.h-bar.b-low  { background: var(--color-error); }
+.h-bar.b-ok   { background: var(--color-success); }
+.h-bar.b-high { background: var(--color-warning); }
+.h-val {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem; font-weight: 600;
+  width: 66px; text-align: right; flex-shrink: 0;
+}
+.h-val.low  { color: var(--color-error); }
+.h-val.ok   { color: var(--color-success); }
+.h-val.high { color: var(--color-warning); }
+
+/* ── TRENDS ───────────────────────────────────────────────────── */
+.tr-block { margin-bottom: var(--sp6); }
+.tr-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .62rem; font-weight: 600;
+  margin-bottom: var(--sp2);
+}
+.tr-head-label { color: var(--color-text-primary); }
+.tr-head-badge {
+  font-size: .58rem; font-family: 'DM Mono', monospace;
+  padding: 1px var(--sp2);
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+}
+.tr-head-badge.err  { background: var(--color-bg-error);   color: var(--color-error); }
+.tr-head-badge.warn { background: var(--color-bg-warning); color: var(--color-warning); }
+.tr-head-badge.ok   { background: var(--color-bg-success); color: var(--color-success); }
+.tr-bars { display: flex; align-items: flex-end; gap: 3px; height: 44px; }
+.tr-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tr-b { width: 100%; border-radius: 2px 2px 0 0; }
+.tr-bval {
+  font-size: .45rem; font-family: 'DM Mono', monospace;
+  color: var(--color-text-tertiary); text-align: center;
+}
+.tr-labels { display: flex; gap: 3px; margin-top: var(--sp1); }
+.tr-lbl { flex: 1; text-align: center; font-size: .45rem; color: var(--color-text-tertiary); font-family: 'DM Mono', monospace; }
+
+/* ── MEDS ─────────────────────────────────────────────────────── */
+.med-slot {
+  display: flex; gap: var(--sp3);
+  padding: var(--sp3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.med-slot:last-child { border-bottom: none; }
+.med-time {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; font-weight: 600;
+  color: var(--color-blue-vivid);
+  width: 44px; flex-shrink: 0;
+  padding-top: 1px;
+}
+.med-list { flex: 1; }
+.med-tag {
+  display: inline-block;
+  font-size: .58rem; font-weight: 600;
+  padding: 1px var(--sp2);
+  border-radius: var(--radius-inner);
+  background: var(--color-blue-subtle);
+  color: var(--color-blue-vivid);
+  margin-bottom: var(--sp1);
+}
+.med-drug {
+  font-size: .72rem; line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+/* ── SUMMARY ──────────────────────────────────────────────────── */
+.s-group { margin-bottom: var(--sp5); }
+.s-group-title {
+  font-size: .58rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  margin-bottom: var(--sp2);
+  display: flex; align-items: center; gap: var(--sp1);
+}
+.s-group-title.err  { color: var(--color-error); }
+.s-group-title.warn { color: var(--color-warning); }
+.s-group-title.ok   { color: var(--color-success); }
+.s-group-title.info { color: var(--color-info); }
+.s-entry {
+  display: flex; gap: var(--sp2); align-items: flex-start;
+  font-size: .72rem; line-height: 1.5;
+  margin-bottom: var(--sp2);
+  padding: var(--sp2) var(--sp3);
+  border-radius: var(--radius-element);
+  border-width: 1px; border-style: solid;
+}
+.s-entry.err  { background: var(--color-bg-error);   border-color: rgba(220,38,38,.12); color: var(--color-text-error); }
+.s-entry.warn { background: var(--color-bg-warning); border-color: rgba(202,138,4,.12); color: var(--color-text-warning); }
+.s-entry.ok   { background: var(--color-bg-success); border-color: rgba(22,163,74,.12); color: var(--color-text-success); }
+.s-entry.info { background: var(--color-bg-info);    border-color: rgba(37,99,235,.12); color: var(--color-text-info); }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-title">
-    <h1>Simba</h1>
-    <p>Pomeranian · Macho · Historia clínica</p>
-  </div>
-  <div class="header-stats">
-    <div class="stat"><div class="stat-num">11</div><div class="stat-label">Visitas</div></div>
-    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Hemogramas</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--red);font-size:1rem;padding-top:0.3rem">B2</div><div class="stat-label">Cardiopatía</div></div>
-  </div>
-</div>
+<!-- APP SHELL — XDS AppShell -->
+<div class="app">
 
-<div class="main">
-  <div>
-    <div class="section-label">Cronología de exámenes · más reciente primero</div>
+  <!-- CENTER COLUMN -->
+  <div class="center">
 
-    <!-- FILTROS -->
-    <div style="margin-bottom:0.8rem;">
-      <input id="search-visits" type="text" placeholder="🔍 Buscar por clínica, fecha, hallazgo…" oninput="filterVisits()" style="width:100%;padding:0.45rem 0.8rem;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text);background:var(--surface);margin-bottom:0.5rem;outline:none;">
-      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-        <button class="filter-btn active" onclick="setFilter('all',this)">Todas</button>
-        <button class="filter-btn" onclick="setFilter('hemo',this)">Hemograma</button>
-        <button class="filter-btn" onclick="setFilter('quim',this)">Química</button>
-        <button class="filter-btn" onclick="setFilter('rx',this)">Rx</button>
-        <button class="filter-btn" onclick="setFilter('us',this)">Ultrasonido</button>
-        <button class="filter-btn" onclick="setFilter('cardio',this)">Cardiología</button>
+    <!-- XDS TopNav / PageHeader -->
+    <div class="topbar">
+      <div class="topbar-eyebrow">Historia clínica · Canina · Pomeranian</div>
+      <h1>Simba Prado Muñoz</h1>
+      <div class="topbar-meta">Macho · 9 años · Registro dic 2025 – jun 2026</div>
+      <div class="search-row">
+        <div class="xds-input">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="q" type="text" placeholder="Buscar visita, hallazgo, clínica…" oninput="filterVisits()">
+        </div>
+        <!-- Mobile drawer trigger — hidden on desktop -->
+        <button class="mob-trigger" onclick="openDrawer()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Info
+        </button>
       </div>
     </div>
 
-    <div class="timeline" id="timeline">
+    <!-- XDS StatBar -->
+    <div class="stat-strip">
+      <div class="sc"><div class="sc-n">11</div><div class="sc-label">Visitas</div></div>
+      <div class="sc"><div class="sc-n">8</div><div class="sc-label">Hemogramas</div></div>
+      <div class="sc"><div class="sc-n err">B2</div><div class="sc-label">MMVD cardiopatía</div></div>
+      <div class="sc"><div class="sc-n warn" style="font-size:1.1rem;padding-top:.2rem;">34.4%</div><div class="sc-label">HCT · Anemia</div></div>
+      <div class="sc"><div class="sc-n err">700</div><div class="sc-label">PLT · Trombocitosis</div></div>
+    </div>
 
-      <!-- 11 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot" style="background:var(--red-pale);border-color:var(--red);color:var(--red);">11</div>
-        <div class="visit-card" style="border-color:rgba(192,57,43,0.3);">
-          <div class="visit-header">
-            <div class="visit-date">13/06/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Rx Tórax — Control post-internamiento</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dra. Valeria Arias</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-rx">Rx</span></div>
-            <span class="chevron">›</span>
+    <!-- XDS AlertCards strip -->
+    <div class="alert-strip">
+      <div class="ac ac-error">
+        <div class="ac-chip">⚠ Alerta</div>
+        <div class="ac-title">PLT 700 ↑↑↑</div>
+        <div class="ac-sub">Trombocitosis severa<br>+486 en 10 días</div>
+      </div>
+      <div class="ac ac-warning">
+        <div class="ac-chip">Pendiente</div>
+        <div class="ac-title">Control hepático</div>
+        <div class="ac-sub">ALT 401 (may 31)<br>+ T4 · renal · hierro</div>
+      </div>
+      <div class="ac ac-success">
+        <div class="ac-chip">✓ Mejora</div>
+        <div class="ac-title">Pulmones limpios</div>
+        <div class="ac-sub">Sin edema pulmonar<br>Pimobendan efectivo</div>
+      </div>
+      <div class="ac ac-info">
+        <div class="ac-chip">Crónico</div>
+        <div class="ac-title">MMVD · Estadio B2</div>
+        <div class="ac-sub">LA/Ao 1.85 · Soplo 3/VI<br>Reevaluar feb 2027</div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="tl-wrap">
+      <div class="tl-top">
+        <div class="tl-header">Cronología de visitas — más reciente primero</div>
+        <div class="pills">
+          <button class="pill on"   onclick="setFilter('all',this)">Todas</button>
+          <button class="pill"      onclick="setFilter('hemo',this)">Hemo</button>
+          <button class="pill"      onclick="setFilter('quim',this)">Química</button>
+          <button class="pill"      onclick="setFilter('rx',this)">Rx</button>
+          <button class="pill"      onclick="setFilter('us',this)">US</button>
+          <button class="pill"      onclick="setFilter('card',this)">Cardio</button>
+        </div>
+      </div>
+
+      <!-- V11 -->
+      <div class="visit" data-tags="hemo rx" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">11</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma + Rx Tórax — Control post-internamiento</div>
+            <div class="v-clinic">Hospital Veterinario IntensiVet · Dra. Valeria Arias</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Fórmula Roja</div>
-            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>Anemia persistente:</strong> HCT 34.4% ↓ (ref. 37.3–61.7%), HGB 11.9 ↓, RBC 5.34 ↓. Sin reticulocitosis — anemia no regenerativa.</span></div>
-            <div class="sub-label">Fórmula Blanca</div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>WBC 12.01 ✓</strong> — normalizado y estable. Neutrófilos 8.75 ✓, Linfocitos 2.35 ✓.</span></div>
-            <div class="sub-label">Plaquetas ⚠</div>
-            <div class="finding alert"><span class="finding-icon">↑↑↑</span><span><strong>Trombocitosis severa: PLT 700</strong> (ref. 148–484). Plateletcrit 0.89% ↑↑. Salto desde 214 el 3 jun en solo 10 días.</span></div>
-            <div class="sub-label">Radiografías de Tórax (3 proyecciones)</div>
-            <div class="finding alert"><span class="finding-icon">🫀</span><span><strong>Cardiomegalia:</strong> Silueta cardíaca aumentada en todas las proyecciones, forma globoide en laterales. Compatible con MMVD activo.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Desplazamiento dorsal de tráquea</strong> en vistas laterales — signo de agrandamiento de aurícula izquierda (LA).</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Sin edema pulmonar:</strong> Campos pulmonares sin patrón alveolar difuso. Pulmones limpios.</span></div>
-            <div class="finding info"><span class="finding-icon">ℹ</span><span><strong>Hepatomegalia visible</strong> en vista lateral — sobresale del margen costal. Consistente con ultrasonido de enero.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/11jgmkDezixV_-1IQROm-MNiNIVbAZ3_l/view" target="_blank">📄 Hemograma Jun 13</a>
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/14KM1Yp9C_Cm0mx_UcK45vGqLbwWe7dQo/view" target="_blank">🩻 Rx Tórax Jun 13</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">13/06/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-rx">Rx</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="sub-label">Fórmula Roja</div>
+          <div class="finding f-warning"><span class="finding-icon">↓</span><span><strong>Anemia persistente:</strong> HCT 34.4% ↓, HGB 11.9 ↓, RBC 5.34 ↓. Anemia no regenerativa.</span></div>
+          <div class="sub-label">Fórmula Blanca</div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>WBC 12.01 ✓</strong> — normalizado. Neutrófilos 8.75 ✓, Linfocitos 2.35 ✓.</span></div>
+          <div class="sub-label">Plaquetas</div>
+          <div class="finding f-error"><span class="finding-icon">↑↑↑</span><span><strong>PLT 700</strong> (ref 148–484). PCT 0.89% ↑↑. Salto desde 214 el 3 jun. Probable trombocitosis reactiva (hígado).</span></div>
+          <div class="sub-label">Radiografía Tórax — 3 proyecciones</div>
+          <div class="finding f-error"><span class="finding-icon">🫀</span><span><strong>Cardiomegalia</strong> en silueta globoide. Desplazamiento dorsal de tráquea (LA aumentado).</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>Sin edema pulmonar</strong> — campos limpios vs mayo 31. Pimobendan efectivo.</span></div>
+          <div class="finding f-info"><span class="finding-icon">ℹ</span><span><strong>Hepatomegalia</strong> visible en proyección lateral.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/11jgmkDezixV_-1IQROm-MNiNIVbAZ3_l/view" target="_blank">📄 Hemograma Jun 13</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/14KM1Yp9C_Cm0mx_UcK45vGqLbwWe7dQo/view" target="_blank">🩻 Rx Tórax Jun 13</a>
           </div>
         </div>
       </div>
 
-      <!-- 10 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot" style="background:var(--amber-pale);border-color:var(--amber);color:var(--amber);">10</div>
-        <div class="visit-card" style="border-color:rgba(181,98,10,0.3);">
-          <div class="visit-header">
-            <div class="visit-date">03/06/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma de control — Internamiento</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dra. Gloriana Chinchilla</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span></div>
-            <span class="chevron">›</span>
+      <!-- V10 -->
+      <div class="visit" data-tags="hemo" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">10</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma de control — Internamiento</div>
+            <div class="v-clinic">Hospital Veterinario IntensiVet · Dra. Gloriana Chinchilla</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Fórmula Roja</div>
-            <div class="finding alert"><span class="finding-icon">↓</span><span><strong>Anemia empeorando:</strong> HCT 33.4% ↓ (era 36.8%), HGB 11.8 ↓, RBC 5.30 ↓. Anemia no regenerativa probable.</span></div>
-            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>Reticulocyte HGB 21.1 ↓</strong> — baja disponibilidad de hierro. Posible inflamación o déficit.</span></div>
-            <div class="sub-label">Fórmula Blanca</div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Neutrófilos 11.84 ↑</strong> (ref. 2.95–11.64). Lab indica posibles neutrófilos inmaduros/tóxicos — inflamación activa.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Monocitos 1.53 ↑</strong> — inflamación crónica persistente.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>WBC 15.08</strong> — dentro del rango normal.</span></div>
-            <div class="sub-label">Plaquetas</div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Plaquetas 214 ✓</strong> — normalizaron completamente (eran 566). Excelente mejoría.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1VJXOFNILc7XWK3Pvi1o2Xgeh9JmdrHF0/view" target="_blank">📄 Hemograma Jun 3</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">03/06/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-error"><span class="finding-icon">↓</span><span><strong>Anemia empeorando:</strong> HCT 33.4% ↓, HGB 11.8 ↓, RBC 5.30 ↓. Reticulocyte HGB 21.1 ↓ (hierro bajo).</span></div>
+          <div class="finding f-warning"><span class="finding-icon">↑</span><span><strong>Neutrófilos 11.84 ↑</strong> y monocitos 1.53 ↑ — inflamación activa/crónica.</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>PLT 214 ✓</strong> — normalizaron completamente (eran 566 el 31 may). Excelente mejoría.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1VJXOFNILc7XWK3Pvi1o2Xgeh9JmdrHF0/view" target="_blank">📄 Hemograma Jun 3</a>
           </div>
         </div>
       </div>
 
-      <!-- 9 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot" style="background:var(--red-pale);border-color:var(--red);color:var(--red);">09</div>
-        <div class="visit-card" style="border-color:rgba(192,57,43,0.3);">
-          <div class="visit-header">
-            <div class="visit-date">01/06/2026</div>
-            <div style="flex:1"><div class="visit-title">Ecocardiograma — Diagnóstico cardíaco</div><div class="visit-clinic">CardioCaré · Dra. Daniela Portilla Araya</div></div>
-            <div class="visit-tags">
-              <span class="tag tag-rx">Ecocardio</span>
-              <span class="tag tag-panel">Cardiología</span>
-            </div>
-            <span class="chevron">›</span>
+      <!-- V9 -->
+      <div class="visit" data-tags="card rx" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">09</div>
+          <div class="v-body">
+            <div class="v-title">Ecocardiograma — Diagnóstico MMVD B2</div>
+            <div class="v-clinic">CardioCaré · Dra. Daniela Portilla Araya</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Diagnóstico</div>
-            <div class="finding alert" style="font-weight:600;"><span class="finding-icon">🫀</span><span><strong>Enfermedad valvular mitral estadio B2 (ACVIM)</strong> — Insuficiencia mitral y tricuspídea. Atrio izquierdo dilatado.</span></div>
-            <div class="sub-label">Hallazgos ecocardiográficos</div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Soplo grado 3/VI</strong> sistólico mitral y tricúspide. Regurgitación mitral severa: vel. 5.67 m/s, gradiente 128.7 mmHg.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Atrio izquierdo dilatado:</strong> LA/Ao 1.85 (ref. &lt;1.6). Dilatación confirmada.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Función sistólica normal:</strong> Fracción de eyección 76%, fracción acortamiento 43%.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Hipertensión pulmonar: probabilidad baja.</strong> Ventrículo derecho normal.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Campos pulmonares con crepitantes.</strong> FC: 62 bpm.</span></div>
-            <div class="sub-label">Tratamiento recetado</div>
-            <div class="finding info"><span class="finding-icon">💊</span><span><strong>Pimobendan 2.5 mg</strong> — 1/2 tableta cada 12 horas. Permanente.</span></div>
-            <div class="finding info"><span class="finding-icon">💊</span><span><strong>Maropitant 2 mg</strong> — 1/2 tableta cada 24 horas. Permanente (de noche).</span></div>
-            <div class="finding info"><span class="finding-icon">💨</span><span><strong>Nebulizaciones Pulmicort:</strong> 1 ml Pulmicort + 3 ml solución salina, 5–10 min. Cada 8h por 10 días, luego solo de noche.</span></div>
-            <div class="finding info"><span class="finding-icon">📅</span><span>Reevaluar en <strong>8 meses</strong>. Valorar antibiótico de amplio espectro.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1YHIEvg6vPYDcWkt6XoWt7jxCgWo8EkGa/view" target="_blank">📄 Informe cardiológico</a>
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1SYGUUWho5oEwgJIxb-h6LTTg3P0QVIfl/view" target="_blank">📄 Ecocardiograma (datos)</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">01/06/2026</div>
+            <div class="v-tags"><span class="tag tag-card">Cardio</span><span class="tag tag-rx">Ecocardio</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-error"><span class="finding-icon">🫀</span><span><strong>Enfermedad valvular mitral estadio B2 (ACVIM).</strong> Insuficiencia mitral y tricuspídea. Soplo 3/VI.</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑</span><span>Regurgitación mitral severa: vel. 5.67 m/s, gradiente 128.7 mmHg. <strong>LA/Ao 1.85</strong> (ref &lt;1.6).</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>Función sistólica normal:</strong> FE 76%, FA 43%. Hipertensión pulmonar: probabilidad baja.</span></div>
+          <div class="finding f-info"><span class="finding-icon">💊</span><span><strong>Pimobendan 2.5 mg</strong> c/12h (permanente) + Maropitant 2mg c/24h. Nebulizaciones Pulmicort × 10 días, luego solo de noche. Reevaluar en 8 meses (feb 2027).</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1YHIEvg6vPYDcWkt6XoWt7jxCgWo8EkGa/view" target="_blank">📄 Informe cardiológico</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1SYGUUWho5oEwgJIxb-h6LTTg3P0QVIfl/view" target="_blank">📄 Datos ecocardiograma</a>
           </div>
         </div>
       </div>
 
-      <!-- 8 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot" style="background:var(--amber-pale);border-color:var(--amber);color:var(--amber);">08</div>
-        <div class="visit-card" style="border-color:rgba(181,98,10,0.3);">
-          <div class="visit-header">
-            <div class="visit-date">31/05/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Química + Rx Tórax</div><div class="visit-clinic">Hospital Veterinario IntensiVet · Dr. Ashley Mena Vindas</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span><span class="tag tag-rx">Rx</span></div>
-            <span class="chevron">›</span>
+      <!-- V8 -->
+      <div class="visit" data-tags="hemo quim rx" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">08</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma + Química + Rx Tórax</div>
+            <div class="v-clinic">Hospital Veterinario IntensiVet · Dr. Ashley Mena Vindas</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Fórmula Roja</div>
-            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>HCT 36.8% y HGB 12.9</strong> — levemente por debajo del rango. Lab indica posible anemia no regenerativa o pre-regenerativa. RBC 5.86 en rango.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Reticulocitos 22.9 K/µL normales. MCV, MCH, MCHC dentro de rangos.</span></div>
-            <div class="sub-label">Fórmula Blanca</div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>WBC 10.31</strong> — completamente normal. Neutrófilos 6.86 ✓, Linfocitos 2.18 ✓.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Monocitos 1.17</strong> (ref. 0.16–1.12) — levemente elevados. Persiste inflamación crónica de fondo.</span></div>
-            <div class="sub-label">Plaquetas</div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Plaquetas 566</strong> (ref. 148–484) y Plateletcrit 0.75% ↑. Trombocitosis leve persistente.</span></div>
-            <div class="sub-label">Química sanguínea</div>
-            <div class="finding alert"><span class="finding-icon">↑↑</span><span><strong>ALT 401 U/L</strong> (ref. 10–125) — 3× el límite superior. Daño hepático activo significativo.</span></div>
-            <div class="finding alert"><span class="finding-icon">↑↑</span><span><strong>ALP 319 U/L</strong> (ref. 23–212) — 1.5× el límite. Confirma compromiso hepático/biliar activo.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Glucosa, creatinina, BUN, proteínas, albúmina y globulina dentro de rangos normales.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1MRHPdJOkVkaiQw1BJqOjqYyMgTpjN3_Q/view" target="_blank">📄 Hemograma + Química May 31</a>
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1UZYevxivyjXlXiQOyXSQkE1Sv1uD5fRy/view" target="_blank">🩻 Rx Tórax May 31</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">31/05/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-quim">Quím</span><span class="tag tag-rx">Rx</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-warning"><span class="finding-icon">↓</span><span><strong>Anemia leve:</strong> HGB 12.9 ↓, HCT 36.8% ↓. RBC 5.86 ✓.</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑↑</span><span><strong>ALT 401 U/L ↑↑↑</strong> (ref 10–125) — daño hepático significativo. ALP 319 ↑↑.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">⚠</span><span><strong>Congestión pulmonar incipiente</strong> en campos craneoventrales. Hepatomegalia visible.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1MRHPdJOkVkaiQw1BJqOjqYyMgTpjN3_Q/view" target="_blank">📄 Hemograma + Química</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1UZYevxivyjXlXiQOyXSQkE1Sv1uD5fRy/view" target="_blank">🩻 Rx Tórax May 31</a>
           </div>
         </div>
       </div>
 
-      <!-- 7 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot" style="background:var(--green-pale);border-color:var(--green);color:var(--green);">07</div>
-        <div class="visit-card" style="border-color:rgba(46,125,81,0.3);">
-          <div class="visit-header">
-            <div class="visit-date">09/05/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma de control</div><div class="visit-clinic">HermiVet · Dr. Pablo Salazar</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span></div>
-            <span class="chevron">›</span>
+      <!-- V7 -->
+      <div class="visit" data-tags="hemo" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">07</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma de control</div>
+            <div class="v-clinic">HermiVet · Dr. Pablo Salazar</div>
           </div>
-          <div class="visit-body">
-            <div class="finding ok" style="font-weight:600;"><span class="finding-icon">🎉</span><span><strong>¡Anemia resuelta!</strong> RBC 5.89 ✓, HGB 13.6 ✓, HCT 39.6% — todos normales por primera vez desde dic 2025.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Glóbulos blancos normalizados:</strong> WBC 7.97 (ref. 6–17). La infección cedió completamente.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Plaquetas normales:</strong> 547 (ref. 180–600). Bajaron de 782 a rango normal.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Monocitos% levemente elevados:</strong> 14% (ref. 0–10). Persiste inflamación crónica leve.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>PCT y P-LCC levemente altos</strong> — parámetros plaquetarios menores, sin relevancia clínica mayor.</span></div>
-            <div class="doc-buttons"><a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1Fb2Vn42TBsCaQavqkUZm04n2TbtOCJlu/view" target="_blank">📄 Hemograma May 9</a></div>
+          <div class="v-right">
+            <div class="v-date">09/05/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-success"><span class="finding-icon">🎉</span><span><strong>¡Anemia resuelta!</strong> RBC 5.89 ✓, HGB 13.6 ✓, HCT 39.6% ✓ — todos normales por primera vez desde dic 2025.</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>WBC 7.97 ✓</strong> — infección resuelta. PLT 547 ✓.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">↑</span><span><strong>Monocitos 14% ↑</strong> — inflamación crónica leve persistente.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1Fb2Vn42TBsCaQavqkUZm04n2TbtOCJlu/view" target="_blank">📄 Hemograma May 9</a>
           </div>
         </div>
       </div>
 
-      <!-- 6 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">06</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">21/03/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Heces completo</div><div class="visit-clinic">SolVet · Veterinaria Con Amor</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-heces">Heces</span></div>
-            <span class="chevron">›</span>
+      <!-- V6 -->
+      <div class="visit" data-tags="hemo hec" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">06</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma + Heces completo</div>
+            <div class="v-clinic">SolVet · Veterinaria Con Amor</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Hemograma (manual)</div>
-            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>Anemia leve regenerativa:</strong> HCT 35.9%, RBC 5.20↓. Reticulocitos 1.1% ↑ → médula respondiendo.</span></div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Leucocitosis con desviación a la izquierda:</strong> WBC 20.35, Bandas 2.00 → infección bacteriana activa severa.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Monocitosis:</strong> 1.60 → inflamación crónica sostenida.</span></div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Trombocitosis marcada:</strong> 782 plaquetas. Grumos plaquetarios 2+.</span></div>
-            <div class="sub-label">Heces completo</div>
-            <div class="finding alert"><span class="finding-icon">⚠</span><span><strong>Moco y sangre visible presentes.</strong> Color café oscuro.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Sin parásitos detectados. Microbiota intestinal normal.</span></div>
-            <div class="doc-buttons"><a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1o2yb908GVxgY0J7v28Untrl1WajwrACY/view" target="_blank">📄 Hemograma + Heces</a></div>
+          <div class="v-right">
+            <div class="v-date">21/03/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-hec">Heces</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-warning"><span class="finding-icon">↓</span><span><strong>Anemia leve regenerativa:</strong> HCT 35.9%, RBC 5.20 ↓. Reticulocitos 1.1% ↑ (médula respondiendo).</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑</span><span><strong>Leucocitosis con desviación izquierda:</strong> WBC 20.35, Bandas 2.00 — infección bacteriana severa activa.</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑</span><span><strong>Trombocitosis marcada: PLT 782.</strong> Grumos plaquetarios 2+.</span></div>
+          <div class="finding f-error"><span class="finding-icon">⚠</span><span>Heces: <strong>moco y sangre visibles.</strong> Sin parásitos. Microbiota normal.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1o2yb908GVxgY0J7v28Untrl1WajwrACY/view" target="_blank">📄 Hemograma + Heces</a>
           </div>
         </div>
       </div>
 
-      <!-- 5 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">05</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">12/03/2026</div>
-            <div style="flex:1"><div class="visit-title">Evaluación completa — múltiples estudios</div><div class="visit-clinic">Hospital Veterinario Agromédica · Escazú</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span><span class="tag tag-rx">Rx tórax</span><span class="tag tag-us">Ultrasonido</span><span class="tag tag-panel">Panel vectorial</span><span class="tag tag-heces">Coprología</span></div>
-            <span class="chevron">›</span>
+      <!-- V5 -->
+      <div class="visit" data-tags="hemo quim rx us" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">05</div>
+          <div class="v-body">
+            <div class="v-title">Evaluación completa — múltiples estudios</div>
+            <div class="v-clinic">Hospital Veterinario Agromédica · Escazú</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Panel Enfermedades Vectoriales</div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Filaria, Lyme, Anaplasma, Ehrlichia canis → <strong>todos negativos.</strong></span></div>
-            <div class="sub-label">Coprología</div>
-            <div class="finding alert"><span class="finding-icon">⚠</span><span><strong>Ancylostoma canis presente.</strong> Microflora bacteriana aumentada.</span></div>
-            <div class="sub-label">Hemograma</div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Leucocitosis severa:</strong> WBC 25.4. Neutrófilos muy elevados (20.9).</span></div>
-            <div class="finding alert"><span class="finding-icon">↓</span><span><strong>Anemia persiste:</strong> RBC 4.41, HGB 9.80, HTO 29.5%.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Plaquetas altas:</strong> PLT 538. Monocitos elevados.</span></div>
-            <div class="sub-label">Química sanguínea</div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Todo dentro de rangos normales.</span></div>
-            <div class="sub-label">Radiografía tórax</div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Corazón en límite superior (11.5v).</strong> Evaluar cardiopatía.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Tráquea estrecha</strong> → posible traqueomalasia.</span></div>
-            <div class="finding alert"><span class="finding-icon">⚠</span><span><strong>Espondilosis deformante grado 2/3 en T5-T9</strong> + listesis vertebral L5-L6.</span></div>
-            <div class="sub-label">Ultrasonido abdominal</div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Calcificaciones renales</strong> pélvicas bilaterales. Hepatomegalia subjetiva.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Pared gástrica engrosada</strong> → Gastritis crónica inflamatoria.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/17kooKqONJYU_ECQtTEvz4d1SAqrTY8Pf/view" target="_blank">📄 Rx tórax + Ultrasonido</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">12/03/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-quim">Quím</span><span class="tag tag-rx">Rx</span><span class="tag tag-us">US</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>Panel vectorial negativo:</strong> Filaria, Lyme, Anaplasma, Ehrlichia canis → todos negativos.</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑↑</span><span><strong>Leucocitosis severa:</strong> WBC 25.4, Neutrófilos 20.9 ↑↑. Anemia: RBC 4.41 ↓, HTO 29.5% ↓.</span></div>
+          <div class="finding f-error"><span class="finding-icon">⚠</span><span><strong>Ancylostoma canis</strong> presente en coprología. Corazón 11.5v (límite superior). Tráquea estrecha.</span></div>
+          <div class="finding f-error"><span class="finding-icon">⚠</span><span><strong>Espondilosis T5-T9 grado 2/3</strong> + listesis L5-L6. Hepatomegalia. Calcificaciones renales. Pared gástrica engrosada.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/17kooKqONJYU_ECQtTEvz4d1SAqrTY8Pf/view" target="_blank">📄 Rx + Ultrasonido</a>
           </div>
         </div>
       </div>
 
-      <!-- 4 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">04</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">03/03/2026</div>
-            <div style="flex:1"><div class="visit-title">Radiografía columna lumbosacra</div><div class="visit-clinic">Hospital Veterinario Agromédica · Escazú</div></div>
-            <div class="visit-tags"><span class="tag tag-rx">Rx columna</span></div>
-            <span class="chevron">›</span>
+      <!-- V4 -->
+      <div class="visit" data-tags="rx" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">04</div>
+          <div class="v-body">
+            <div class="v-title">Radiografía columna lumbosacra</div>
+            <div class="v-clinic">Hospital Veterinario Agromédica · Escazú</div>
           </div>
-          <div class="visit-body">
-            <div class="finding ok"><span class="finding-icon">✓</span><span><strong>Resultado normal.</strong> Sin calcificación discal, espondilosis ni listesis en zona lumbosacra.</span></div>
+          <div class="v-right">
+            <div class="v-date">03/03/2026</div>
+            <div class="v-tags"><span class="tag tag-rx">Rx</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>Normal.</strong> Sin calcificación discal, espondilosis ni listesis en región lumbosacra.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1-PI-29iepPwscXn4-5tQ9T6B84Vp5wB_/view" target="_blank">📄 Rx columna</a>
           </div>
         </div>
       </div>
 
-      <!-- 3 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">03</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">06/01/2026</div>
-            <div style="flex:1"><div class="visit-title">Ultrasonido abdominal</div><div class="visit-clinic">Groom Luxury Vet · Animagenes</div></div>
-            <div class="visit-tags"><span class="tag tag-us">Ultrasonido</span></div>
-            <span class="chevron">›</span>
+      <!-- V3 -->
+      <div class="visit" data-tags="us" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">03</div>
+          <div class="v-body">
+            <div class="v-title">Ultrasonido abdominal</div>
+            <div class="v-clinic">Groom Luxury Vet · Animagenes</div>
           </div>
-          <div class="visit-body">
-            <div class="finding alert"><span class="finding-icon">⚠</span><span><strong>Hígado aumentado, parénquima heterogéneo:</strong> Degeneración vacuolar con fibrosis. Biopsia recomendada.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Vesícula biliar:</strong> Barro biliar abundante vs mucocele biliar grado I.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Riñones:</strong> Quistes corticales + mineralización distrófica → degeneración renal senil.</span></div>
-            <div class="finding warn"><span class="finding-icon">⚠</span><span><strong>Próstata:</strong> Levemente aumentada → hiperplasia prostática benigna.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>Vejiga, bazo, páncreas e intestinos sin alteraciones.</span></div>
-            <div class="doc-buttons"><a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1_nFa67cyyHdEshPrbEaDO3p8vqa5XgDt/view" target="_blank">📄 Ultrasonido abdominal</a></div>
+          <div class="v-right">
+            <div class="v-date">06/01/2026</div>
+            <div class="v-tags"><span class="tag tag-us">US</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-error"><span class="finding-icon">⚠</span><span><strong>Hígado aumentado, parénquima heterogéneo:</strong> Degeneración vacuolar con fibrosis. Biopsia recomendada.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">⚠</span><span><strong>Vesícula biliar:</strong> barro biliar abundante vs mucocele biliar grado I.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">⚠</span><span><strong>Riñones:</strong> quistes corticales + mineralización distrófica (degeneración senil). <strong>Próstata</strong> levemente aumentada (HPB).</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span>Vejiga, bazo, páncreas e intestinos sin alteraciones.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1_nFa67cyyHdEshPrbEaDO3p8vqa5XgDt/view" target="_blank">📄 Ultrasonido abdominal</a>
           </div>
         </div>
       </div>
 
-      <!-- 2 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">02</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">04/01/2026</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Química + Radiografías tórax</div><div class="visit-clinic">Groom Luxury Vet</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span><span class="tag tag-rx">Rx</span></div>
-            <span class="chevron">›</span>
+      <!-- V2 -->
+      <div class="visit" data-tags="hemo quim rx" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">02</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma + Química + Radiografías tórax</div>
+            <div class="v-clinic">Groom Luxury Vet</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Fórmula Roja</div>
-            <div class="finding alert"><span class="finding-icon">↓</span><span><strong>Anemia persiste:</strong> RBC 4.34, HGB 108 g/L, HCT 30.5%.</span></div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>Plaquetas muy elevadas:</strong> PLT 694. Trombocitosis marcada.</span></div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>Eosinófilos altos:</strong> 10.8% → posibles parásitos o respuesta alérgica.</span></div>
-            <div class="sub-label">Química sanguínea</div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>ALT en límite:</strong> 141 U/L. Muestra lipémica.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>BUN, creatinina, glucosa, proteínas y electrolitos normales.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1kwaQgtYc-zyAi_zd4GIAypsMJld2eMgg/view" target="_blank">📄 Hemograma</a>
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/15vdoOHw0XZdBBB9r4A-Qw7kuAe5OGy2I/view" target="_blank">📄 Química</a>
-              <a class="doc-btn doc-btn-img" href="https://drive.google.com/file/d/1PGyySkXuMF_Zx35maeje3jPgvbpBO-G_/view" target="_blank">🖼 Rx Tórax</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">04/01/2026</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-quim">Quím</span><span class="tag tag-rx">Rx</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-error"><span class="finding-icon">↓</span><span><strong>Anemia moderada:</strong> RBC 4.34 ↓, HGB 108 g/L ↓, HCT 30.5% ↓. PLT 694 ↑↑.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">↑</span><span><strong>Eosinófilos 10.8% ↑</strong> (parásitos o alergia). ALT 141 ↑ (muestra lipémica).</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span>BUN, creatinina, glucosa, proteínas y electrolitos normales.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1kwaQgtYc-zyAi_zd4GIAypsMJld2eMgg/view" target="_blank">📄 Hemograma</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/15vdoOHw0XZdBBB9r4A-Qw7kuAe5OGy2I/view" target="_blank">📄 Química</a>
           </div>
         </div>
       </div>
 
-      <!-- 1 -->
-      <div class="visit" onclick="toggleVisit(this)">
-        <div class="visit-dot">01</div>
-        <div class="visit-card">
-          <div class="visit-header">
-            <div class="visit-date">17/12/2025</div>
-            <div style="flex:1"><div class="visit-title">Hemograma + Química sanguínea</div><div class="visit-clinic">Vet. Arguedas y Cruz · Heredia</div></div>
-            <div class="visit-tags"><span class="tag tag-hemo">Hemograma</span><span class="tag tag-quim">Química</span></div>
-            <span class="chevron">›</span>
+      <!-- V1 -->
+      <div class="visit" data-tags="hemo quim" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">01</div>
+          <div class="v-body">
+            <div class="v-title">Hemograma + Química sanguínea</div>
+            <div class="v-clinic">Vet. Arguedas y Cruz · Heredia</div>
           </div>
-          <div class="visit-body">
-            <div class="sub-label">Fórmula Roja</div>
-            <div class="finding alert"><span class="finding-icon">↓</span><span><strong>Anemia moderada:</strong> RBC 4.27, HGB 9.1 g/dL, HCT 29.2%. Primer registro de anemia.</span></div>
-            <div class="sub-label">Química</div>
-            <div class="finding warn"><span class="finding-icon">↑</span><span><strong>BUN elevado:</strong> 29.7 mg/dL. Posible alteración renal.</span></div>
-            <div class="finding warn"><span class="finding-icon">↓</span><span><strong>Fósforo bajo:</strong> 2.4 mg/dL (ref. 2.5–6.8).</span></div>
-            <div class="finding alert"><span class="finding-icon">↑</span><span><strong>LIPA pancreática 136 U/L</strong> (ref. 0–125) — sugestivo de pancreatitis.</span></div>
-            <div class="finding ok"><span class="finding-icon">✓</span><span>WBC, ALT, ALP, glucosa y plaquetas dentro de rangos normales.</span></div>
-            <div class="doc-buttons">
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1h3bUB6I_B1Dem3kn9BwqqiUm3e3GP6YR/view" target="_blank">📄 Hemograma</a>
-              <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1V7yy0-w8OP_Sx6ADvANRPy20NCxalgD9/view" target="_blank">📄 Química sanguínea</a>
-            </div>
+          <div class="v-right">
+            <div class="v-date">17/12/2025</div>
+            <div class="v-tags"><span class="tag tag-hemo">Hemo</span><span class="tag tag-quim">Quím</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="finding f-error"><span class="finding-icon">↓</span><span><strong>Primera anemia detectada:</strong> RBC 4.27 ↓, HGB 9.1 g/dL ↓, HCT 29.2% ↓.</span></div>
+          <div class="finding f-warning"><span class="finding-icon">↑</span><span><strong>BUN 29.7 ↑</strong> (posible alt. renal). Fósforo 2.4 ↓. <strong>LIPA pancreática 136 ↑</strong> (pancreatitis).</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span>WBC, ALT, ALP, glucosa y plaquetas dentro de rangos normales.</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1h3bUB6I_B1Dem3kn9BwqqiUm3e3GP6YR/view" target="_blank">📄 Hemograma</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1V7yy0-w8OP_Sx6ADvANRPy20NCxalgD9/view" target="_blank">📄 Química</a>
           </div>
         </div>
       </div>
 
     </div>
-  </div>
+  </div><!-- /center -->
 
-  <!-- DERECHA -->
-  <div class="right-panel">
-    <div class="hemo-panel">
-      <div class="hemo-title"><span style="font-size:1rem">◈</span><h3>Comparativa de Hemogramas</h3></div>
-      <div class="hemo-selector">
-        <button class="hemo-btn active" onclick="showHemo('h8',this)" style="background:rgba(192,57,43,0.08);color:var(--red);font-weight:600;">Jun 13 ⚠</button>
-        <button class="hemo-btn" onclick="showHemo('h7',this)">Jun 3</button>
-        <button class="hemo-btn" onclick="showHemo('h6',this)">May 31</button>
-        <button class="hemo-btn" onclick="showHemo('h5',this)">May 9</button>
-        <button class="hemo-btn" onclick="showHemo('h4',this)">Mar 21</button>
-        <button class="hemo-btn" onclick="showHemo('h3',this)">Mar 12</button>
-        <button class="hemo-btn" onclick="showHemo('h2',this)">Ene 2026</button>
-        <button class="hemo-btn" onclick="showHemo('h1',this)">Dic 2025</button>
-      </div>
-      <div class="hemo-content" id="h1">
-        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">17 dic 2025 · Vet. Arguedas y Cruz</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:50%"></div></div><span class="hemo-val low">4.27 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:46%"></div></div><span class="hemo-val low">9.1 g/dL ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:52%"></div></div><span class="hemo-val low">29.2% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:62%"></div></div><span class="hemo-val normal">68.4 fL</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:45%"></div></div><span class="hemo-val normal">10.9</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU%</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:57%"></div></div><span class="hemo-val normal">56.6%</span></div>
-        <div class="hemo-row"><span class="hemo-param">EOS%</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:68%"></div></div><span class="hemo-val normal">9.93%</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:75%"></div></div><span class="hemo-val normal">435</span></div>
-      </div>
-      <div class="hemo-content" id="h2">
-        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">04 ene 2026 · Groom Luxury Vet</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:51%"></div></div><span class="hemo-val low">4.34 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:55%"></div></div><span class="hemo-val low">108 g/L ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:53%"></div></div><span class="hemo-val low">30.5% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:65%"></div></div><span class="hemo-val normal">70.2 fL</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:38%"></div></div><span class="hemo-val normal">6.49</span></div>
-        <div class="hemo-row"><span class="hemo-param">EOS%</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:72%"></div></div><span class="hemo-val high">10.8% ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:85%"></div></div><span class="hemo-val high">694 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:88%"></div></div><span class="hemo-val high">0.653% ↑</span></div>
-      </div>
-      <div class="hemo-content" id="h3">
-        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">12 mar 2026 · Hospital Agromédica</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:52%"></div></div><span class="hemo-val low">4.41 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:49%"></div></div><span class="hemo-val low">9.80 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HTO</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:49%"></div></div><span class="hemo-val low">29.5% ↓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:92%"></div></div><span class="hemo-val high">25.4 ↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:88%"></div></div><span class="hemo-val high">20.9 ↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">MONO#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:80%"></div></div><span class="hemo-val high">3.03 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">LYM#</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:30%"></div></div><span class="hemo-val low">0.66 ↓</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:78%"></div></div><span class="hemo-val high">538 ↑</span></div>
-      </div>
-      <div class="hemo-content" id="h4">
-        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.8rem;font-family:'DM Mono',monospace;">21 mar 2026 · SolVet · Vet. Con Amor</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:61%"></div></div><span class="hemo-val low">5.20 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:64%"></div></div><span class="hemo-val low">35.9% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">RETIC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:55%"></div></div><span class="hemo-val high">1.1% ↑</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:85%"></div></div><span class="hemo-val high">20.35 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:80%"></div></div><span class="hemo-val high">13.40 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">Bandas</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:90%"></div></div><span class="hemo-val high">2.00 ↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">MONO#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:65%"></div></div><span class="hemo-val high">1.60 ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:95%"></div></div><span class="hemo-val high">782 ↑↑</span></div>
-      </div>
-      <div class="hemo-content" id="h5">
-        <div style="font-size:0.65rem;color:var(--green);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">09 may 2026 · HermiVet · Dr. Pablo Salazar</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:69%"></div></div><span class="hemo-val normal">5.89 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:72%"></div></div><span class="hemo-val normal">13.6 g/dL ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:70%"></div></div><span class="hemo-val normal">39.6% ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:67%"></div></div><span class="hemo-val normal">67.2 fL ✓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:50%"></div></div><span class="hemo-val normal">7.97 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU%</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:60%"></div></div><span class="hemo-val normal">71.3% ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MON%</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:70%"></div></div><span class="hemo-val high">14% ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:71%"></div></div><span class="hemo-val normal">547 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:75%"></div></div><span class="hemo-val high">5.66 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">P-LCC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:72%"></div></div><span class="hemo-val high">188 ↑</span></div>
+<!-- Mobile backdrop overlay -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+  <!-- RIGHT PANEL — XDS TabPanel / Mobile Drawer -->
+  <div class="right" id="right-panel">
+    <!-- Close row — only visible on mobile -->
+    <div class="drawer-close">
+      <span class="drawer-close-label">Hemograma · Resumen</span>
+      <button class="drawer-close-btn" onclick="closeDrawer()" aria-label="Cerrar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="r-tabbar">
+      <button class="rtab on"  onclick="switchTab('hemo',this)">Hemograma</button>
+      <button class="rtab"     onclick="switchTab('trends',this)">Tendencias</button>
+      <button class="rtab"     onclick="switchTab('meds',this)">Medicación</button>
+      <button class="rtab"     onclick="switchTab('summary',this)">Resumen</button>
+    </div>
+
+    <!-- ── HEMOGRAMA ── -->
+    <div class="r-pane on" id="pane-hemo">
+      <div class="r-section-title">Comparativa — 8 hemogramas</div>
+      <div class="h-tabs">
+        <button class="htab on warn" onclick="showHemo('h8',this)">Jun 13 ⚠</button>
+        <button class="htab" onclick="showHemo('h7',this)">Jun 3</button>
+        <button class="htab" onclick="showHemo('h6',this)">May 31</button>
+        <button class="htab" onclick="showHemo('h5',this)">May 9</button>
+        <button class="htab" onclick="showHemo('h4',this)">Mar 21</button>
+        <button class="htab" onclick="showHemo('h3',this)">Mar 12</button>
+        <button class="htab" onclick="showHemo('h2',this)">Ene 26</button>
+        <button class="htab" onclick="showHemo('h1',this)">Dic 25</button>
       </div>
 
-      <div class="hemo-content active" id="h8">
-        <div style="font-size:0.65rem;color:var(--red);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">13 jun 2026 · IntensiVet · Dra. Valeria Arias ⚠ PLT 700</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:62%"></div></div><span class="hemo-val low">5.34 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:58%"></div></div><span class="hemo-val low">11.9 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:56%"></div></div><span class="hemo-val low">34.4% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:53%"></div></div><span class="hemo-val normal">64.4 fL ✓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:47%"></div></div><span class="hemo-val normal">12.01 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:65%"></div></div><span class="hemo-val normal">8.75 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">LYM#</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:45%"></div></div><span class="hemo-val normal">2.35 ✓</span></div>
-        <div class="hemo-sub">Plaquetas ⚠</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:95%"></div></div><span class="hemo-val high">700 ↑↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:90%"></div></div><span class="hemo-val high">0.89% ↑↑</span></div>
+      <div class="hc on" id="h8">
+        <div class="h-meta">13 jun 2026 · IntensiVet · Dra. Valeria Arias · ⚠ PLT 700</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:62%"></div></div><span class="h-val low">5.34 ↓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:58%"></div></div><span class="h-val low">11.9 g/dL ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:57%"></div></div><span class="h-val low">34.4% ↓</span></div>
+        <div class="h-row"><span class="h-name">MCV</span><div class="h-track"><div class="h-bar b-ok" style="width:52%"></div></div><span class="h-val ok">64.4 fL ✓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:47%"></div></div><span class="h-val ok">12.01 ✓</span></div>
+        <div class="h-row"><span class="h-name">NEU#</span><div class="h-track"><div class="h-bar b-ok" style="width:65%"></div></div><span class="h-val ok">8.75 ✓</span></div>
+        <div class="h-row"><span class="h-name">LYM#</span><div class="h-track"><div class="h-bar b-ok" style="width:44%"></div></div><span class="h-val ok">2.35 ✓</span></div>
+        <div class="h-section">Plaquetas ⚠</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-high" style="width:94%"></div></div><span class="h-val high">700 ↑↑↑</span></div>
+        <div class="h-row"><span class="h-name">PCT</span><div class="h-track"><div class="h-bar b-high" style="width:89%"></div></div><span class="h-val high">0.89% ↑↑</span></div>
       </div>
 
-      <div class="hemo-content" id="h7">
-        <div style="font-size:0.65rem;color:var(--amber);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">03 jun 2026 · IntensiVet · Dra. Gloriana Chinchilla ⚠ Internado</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:60%"></div></div><span class="hemo-val low">5.30 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:58%"></div></div><span class="hemo-val low">11.8 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:54%"></div></div><span class="hemo-val low">33.4% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:52%"></div></div><span class="hemo-val normal">63.0 fL ✓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:88%"></div></div><span class="hemo-val normal">15.08 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:75%"></div></div><span class="hemo-val high">11.84 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">MONO#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:68%"></div></div><span class="hemo-val high">1.53 ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:45%"></div></div><span class="hemo-val normal">214 ✓</span></div>
+      <div class="hc" id="h7">
+        <div class="h-meta">03 jun 2026 · IntensiVet · Dra. Gloriana Chinchilla · Internado</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:60%"></div></div><span class="h-val low">5.30 ↓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:57%"></div></div><span class="h-val low">11.8 g/dL ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:54%"></div></div><span class="h-val low">33.4% ↓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:88%"></div></div><span class="h-val ok">15.08 ✓</span></div>
+        <div class="h-row"><span class="h-name">NEU#</span><div class="h-track"><div class="h-bar b-high" style="width:75%"></div></div><span class="h-val high">11.84 ↑</span></div>
+        <div class="h-row"><span class="h-name">MONO</span><div class="h-track"><div class="h-bar b-high" style="width:65%"></div></div><span class="h-val high">1.53 ↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-ok" style="width:44%"></div></div><span class="h-val ok">214 ✓</span></div>
       </div>
 
-      <div class="hemo-content" id="h6">
-        <div style="font-size:0.65rem;color:var(--amber);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">31 may 2026 · Hospital IntensiVet · Dra. Ashley Mena ⚠</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:66%"></div></div><span class="hemo-val normal">5.86 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:63%"></div></div><span class="hemo-val low">12.9 ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:60%"></div></div><span class="hemo-val low">36.8% ↓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:53%"></div></div><span class="hemo-val normal">62.8 fL ✓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:48%"></div></div><span class="hemo-val normal">10.31 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU#</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:55%"></div></div><span class="hemo-val normal">6.86 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MONO#</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:68%"></div></div><span class="hemo-val high">1.17 ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:73%"></div></div><span class="hemo-val high">566 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:80%"></div></div><span class="hemo-val high">0.75% ↑</span></div>
-        <div class="hemo-sub">Química sanguínea</div>
-        <div class="hemo-row"><span class="hemo-param">ALT</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:95%;background:var(--red)"></div></div><span class="hemo-val low">401 ↑↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">ALP</span><div class="hemo-bar-wrap"><div class="hemo-bar low" style="width:82%;background:var(--red)"></div></div><span class="hemo-val low">319 ↑↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">BUN</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:70%"></div></div><span class="hemo-val normal">27 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">Glucosa</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:53%"></div></div><span class="hemo-val normal">101 ✓</span></div>
+      <div class="hc" id="h6">
+        <div class="h-meta">31 may 2026 · IntensiVet · Dr. Ashley Mena · ⚠ ALT 401</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-ok" style="width:66%"></div></div><span class="h-val ok">5.86 ✓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:63%"></div></div><span class="h-val low">12.9 ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:60%"></div></div><span class="h-val low">36.8% ↓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:48%"></div></div><span class="h-val ok">10.31 ✓</span></div>
+        <div class="h-section">Química</div>
+        <div class="h-row"><span class="h-name">ALT</span><div class="h-track"><div class="h-bar b-low" style="width:96%"></div></div><span class="h-val low">401 U/L ↑↑↑</span></div>
+        <div class="h-row"><span class="h-name">ALP</span><div class="h-track"><div class="h-bar b-low" style="width:82%"></div></div><span class="h-val low">319 U/L ↑↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-high" style="width:73%"></div></div><span class="h-val high">566 ↑</span></div>
       </div>
 
-      <div class="hemo-content" id="h5">
-        <div style="font-size:0.65rem;color:var(--green);margin-bottom:0.8rem;font-family:'DM Mono',monospace;font-weight:600;">09 may 2026 · HermiVet · Dr. Pablo Salazar ✓</div>
-        <div class="hemo-sub">Fórmula Roja</div>
-        <div class="hemo-row"><span class="hemo-param">RBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:69%"></div></div><span class="hemo-val normal">5.89 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HGB</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:72%"></div></div><span class="hemo-val normal">13.6 g/dL ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">HCT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:70%"></div></div><span class="hemo-val normal">39.6% ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MCV</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:67%"></div></div><span class="hemo-val normal">67.2 fL ✓</span></div>
-        <div class="hemo-sub">Fórmula Blanca</div>
-        <div class="hemo-row"><span class="hemo-param">WBC</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:50%"></div></div><span class="hemo-val normal">7.97 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">NEU%</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:60%"></div></div><span class="hemo-val normal">71.3% ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">MON%</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:70%"></div></div><span class="hemo-val high">14% ↑</span></div>
-        <div class="hemo-sub">Plaquetas</div>
-        <div class="hemo-row"><span class="hemo-param">PLT</span><div class="hemo-bar-wrap"><div class="hemo-bar normal" style="width:71%"></div></div><span class="hemo-val normal">547 ✓</span></div>
-        <div class="hemo-row"><span class="hemo-param">PCT</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:75%"></div></div><span class="hemo-val high">5.66 ↑</span></div>
-        <div class="hemo-row"><span class="hemo-param">P-LCC</span><div class="hemo-bar-wrap"><div class="hemo-bar high" style="width:72%"></div></div><span class="hemo-val high">188 ↑</span></div>
+      <div class="hc" id="h5">
+        <div class="h-meta" style="border-color:rgba(22,163,74,.2);color:var(--color-text-success);">09 may 2026 · HermiVet · Dr. Pablo Salazar ✓ Mejor hemograma</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-ok" style="width:69%"></div></div><span class="h-val ok">5.89 ✓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-ok" style="width:72%"></div></div><span class="h-val ok">13.6 g/dL ✓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-ok" style="width:69%"></div></div><span class="h-val ok">39.6% ✓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:50%"></div></div><span class="h-val ok">7.97 ✓</span></div>
+        <div class="h-row"><span class="h-name">MON%</span><div class="h-track"><div class="h-bar b-high" style="width:70%"></div></div><span class="h-val high">14% ↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-ok" style="width:71%"></div></div><span class="h-val ok">547 ✓</span></div>
+      </div>
+
+      <div class="hc" id="h4">
+        <div class="h-meta">21 mar 2026 · SolVet · Vet. Con Amor</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:61%"></div></div><span class="h-val low">5.20 ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:59%"></div></div><span class="h-val low">35.9% ↓</span></div>
+        <div class="h-row"><span class="h-name">RETIC</span><div class="h-track"><div class="h-bar b-high" style="width:55%"></div></div><span class="h-val high">1.1% ↑</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-high" style="width:84%"></div></div><span class="h-val high">20.35 ↑</span></div>
+        <div class="h-row"><span class="h-name">Bandas</span><div class="h-track"><div class="h-bar b-low" style="width:88%"></div></div><span class="h-val low">2.00 ↑↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-low" style="width:96%"></div></div><span class="h-val low">782 ↑↑</span></div>
+      </div>
+
+      <div class="hc" id="h3">
+        <div class="h-meta">12 mar 2026 · Hospital Agromédica</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:52%"></div></div><span class="h-val low">4.41 ↓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:49%"></div></div><span class="h-val low">9.80 g/dL ↓</span></div>
+        <div class="h-row"><span class="h-name">HTO</span><div class="h-track"><div class="h-bar b-low" style="width:48%"></div></div><span class="h-val low">29.5% ↓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-low" style="width:93%"></div></div><span class="h-val low">25.4 ↑↑</span></div>
+        <div class="h-row"><span class="h-name">NEU#</span><div class="h-track"><div class="h-bar b-low" style="width:88%"></div></div><span class="h-val low">20.9 ↑↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-high" style="width:69%"></div></div><span class="h-val high">538 ↑</span></div>
+      </div>
+
+      <div class="hc" id="h2">
+        <div class="h-meta">04 ene 2026 · Groom Luxury Vet</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:51%"></div></div><span class="h-val low">4.34 ↓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:54%"></div></div><span class="h-val low">108 g/L ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:50%"></div></div><span class="h-val low">30.5% ↓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:38%"></div></div><span class="h-val ok">6.49 ✓</span></div>
+        <div class="h-row"><span class="h-name">EOS%</span><div class="h-track"><div class="h-bar b-high" style="width:72%"></div></div><span class="h-val high">10.8% ↑</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-low" style="width:88%"></div></div><span class="h-val low">694 ↑↑</span></div>
+      </div>
+
+      <div class="hc" id="h1">
+        <div class="h-meta">17 dic 2025 · Vet. Arguedas y Cruz · Primer registro</div>
+        <div class="h-section">Fórmula Roja</div>
+        <div class="h-row"><span class="h-name">RBC</span><div class="h-track"><div class="h-bar b-low" style="width:50%"></div></div><span class="h-val low">4.27 ↓</span></div>
+        <div class="h-row"><span class="h-name">HGB</span><div class="h-track"><div class="h-bar b-low" style="width:46%"></div></div><span class="h-val low">9.1 g/dL ↓</span></div>
+        <div class="h-row"><span class="h-name">HCT</span><div class="h-track"><div class="h-bar b-low" style="width:48%"></div></div><span class="h-val low">29.2% ↓</span></div>
+        <div class="h-section">Fórmula Blanca</div>
+        <div class="h-row"><span class="h-name">WBC</span><div class="h-track"><div class="h-bar b-ok" style="width:44%"></div></div><span class="h-val ok">10.9 ✓</span></div>
+        <div class="h-section">Plaquetas</div>
+        <div class="h-row"><span class="h-name">PLT</span><div class="h-track"><div class="h-bar b-ok" style="width:56%"></div></div><span class="h-val ok">435 ✓</span></div>
       </div>
     </div>
 
-    <div class="trend-panel">
-      <div class="trend-title"><span style="font-size:1rem">↗</span><h3>Tendencias</h3></div>
-      <div class="trend-chart">
-        <div class="trend-label"><span>HCT %</span><span style="color:var(--amber);font-weight:700;">↓ Baja persistente</span></div>
-        <div class="trend-bars">
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:29%;background:var(--red)"></div><div class="trend-dot">29.2</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:31%;background:var(--red)"></div><div class="trend-dot">30.5</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:30%;background:var(--red)"></div><div class="trend-dot">29.5</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:36%;background:var(--amber)"></div><div class="trend-dot">35.9</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:40%;background:var(--green)"></div><div class="trend-dot">39.6</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:37%;background:var(--amber)"></div><div class="trend-dot">36.8</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:33%;background:var(--red)"></div><div class="trend-dot">33.4</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:35%;background:var(--amber)"></div><div class="trend-dot">34.4</div></div>
+    <!-- ── TENDENCIAS ── -->
+    <div class="r-pane" id="pane-trends">
+      <div class="r-section-title">Evolución en el tiempo</div>
+
+      <div class="tr-block">
+        <div class="tr-head">
+          <span class="tr-head-label">HCT % — Hematocrito</span>
+          <span class="tr-head-badge warn">↓ Baja persistente</span>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
+        <div class="tr-bars">
+          <div class="tr-col"><div class="tr-b" style="height:29%;background:var(--color-error)"></div><div class="tr-bval">29.2</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:31%;background:var(--color-error)"></div><div class="tr-bval">30.5</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:30%;background:var(--color-error)"></div><div class="tr-bval">29.5</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:36%;background:var(--color-warning)"></div><div class="tr-bval">35.9</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:40%;background:var(--color-success)"></div><div class="tr-bval">39.6</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:37%;background:var(--color-warning)"></div><div class="tr-bval">36.8</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:33%;background:var(--color-error)"></div><div class="tr-bval">33.4</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:35%;background:var(--color-warning)"></div><div class="tr-bval">34.4</div></div>
+        </div>
+        <div class="tr-labels">
+          <div class="tr-lbl">D'25</div><div class="tr-lbl">E'26</div><div class="tr-lbl">M12</div>
+          <div class="tr-lbl">M21</div><div class="tr-lbl">M9</div><div class="tr-lbl">M31</div>
+          <div class="tr-lbl">J3</div><div class="tr-lbl">J13</div>
+        </div>
       </div>
-      <div class="trend-chart">
-        <div class="trend-label"><span>WBC (glóbulos blancos)</span><span style="color:var(--green);font-weight:700;">✓ Normalizando</span></div>
-        <div class="trend-bars">
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:43%;background:var(--green)"></div><div class="trend-dot">10.9</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:26%;background:var(--green)"></div><div class="trend-dot">6.49</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:100%;background:var(--red)"></div><div class="trend-dot">25.4</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:80%;background:var(--red)"></div><div class="trend-dot">20.4</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:32%;background:var(--green)"></div><div class="trend-dot">7.97</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:41%;background:var(--green)"></div><div class="trend-dot">10.31</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:60%;background:var(--amber)"></div><div class="trend-dot">15.08</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:47%;background:var(--green)"></div><div class="trend-dot">12.01</div></div>
+
+      <div class="tr-block">
+        <div class="tr-head">
+          <span class="tr-head-label">WBC — Glóbulos blancos</span>
+          <span class="tr-head-badge ok">✓ Normalizando</span>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
+        <div class="tr-bars">
+          <div class="tr-col"><div class="tr-b" style="height:43%;background:var(--color-success)"></div><div class="tr-bval">10.9</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:25%;background:var(--color-success)"></div><div class="tr-bval">6.49</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:100%;background:var(--color-error)"></div><div class="tr-bval">25.4</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:80%;background:var(--color-error)"></div><div class="tr-bval">20.4</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:31%;background:var(--color-success)"></div><div class="tr-bval">7.97</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:41%;background:var(--color-success)"></div><div class="tr-bval">10.3</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:59%;background:var(--color-warning)"></div><div class="tr-bval">15.1</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:47%;background:var(--color-success)"></div><div class="tr-bval">12.0</div></div>
+        </div>
+        <div class="tr-labels">
+          <div class="tr-lbl">D'25</div><div class="tr-lbl">E'26</div><div class="tr-lbl">M12</div>
+          <div class="tr-lbl">M21</div><div class="tr-lbl">M9</div><div class="tr-lbl">M31</div>
+          <div class="tr-lbl">J3</div><div class="tr-lbl">J13</div>
+        </div>
       </div>
-      <div class="trend-chart">
-        <div class="trend-label"><span>PLT (plaquetas)</span><span style="color:var(--red);font-weight:700;">↑↑↑ Trombocitosis</span></div>
-        <div class="trend-bars">
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:56%;background:var(--green)"></div><div class="trend-dot">435</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:89%;background:var(--red)"></div><div class="trend-dot">694</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:69%;background:var(--amber)"></div><div class="trend-dot">538</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:100%;background:var(--red)"></div><div class="trend-dot">782</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:70%;background:var(--amber)"></div><div class="trend-dot">547</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:73%;background:var(--amber)"></div><div class="trend-dot">566</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:27%;background:var(--green)"></div><div class="trend-dot">214</div></div>
-          <div class="trend-bar-wrap"><div class="trend-bar" style="height:90%;background:var(--red)"></div><div class="trend-dot">700</div></div>
+
+      <div class="tr-block">
+        <div class="tr-head">
+          <span class="tr-head-label">PLT — Plaquetas</span>
+          <span class="tr-head-badge err">↑↑↑ Trombocitosis</span>
         </div>
-        <div class="trend-xlab"><div class="trend-xl">D'25</div><div class="trend-xl">E'26</div><div class="trend-xl">M12</div><div class="trend-xl">M21</div><div class="trend-xl">M9</div><div class="trend-xl">M31</div><div class="trend-xl">J3</div><div class="trend-xl">J13</div></div>
-      </div>
-    </div>
-
-    <!-- MEDICACIÓN ACTIVA -->
-    <div class="summary-panel">
-      <div class="section-label">💊 Medicación activa</div>
-      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.3rem;">
-
-        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--blackberry);width:52px;flex-shrink:0;padding-top:2px;">5:00 am</div>
-          <div style="flex:1;font-size:0.76rem;line-height:1.5;">
-            <span style="background:#eaf1fb;color:var(--blue);border-radius:4px;padding:0.1rem 0.4rem;font-size:0.68rem;font-weight:600;">En ayunas</span>
-            <span style="margin-left:0.4rem;"><strong>Aciflux</strong> — protector gástrico</span>
-          </div>
+        <div class="tr-bars">
+          <div class="tr-col"><div class="tr-b" style="height:56%;background:var(--color-success)"></div><div class="tr-bval">435</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:89%;background:var(--color-error)"></div><div class="tr-bval">694</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:69%;background:var(--color-warning)"></div><div class="tr-bval">538</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:100%;background:var(--color-error)"></div><div class="tr-bval">782</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:70%;background:var(--color-warning)"></div><div class="tr-bval">547</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:72%;background:var(--color-warning)"></div><div class="tr-bval">566</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:27%;background:var(--color-success)"></div><div class="tr-bval">214</div></div>
+          <div class="tr-col"><div class="tr-b" style="height:90%;background:var(--color-error)"></div><div class="tr-bval">700</div></div>
         </div>
-
-        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--blackberry);width:52px;flex-shrink:0;padding-top:2px;">7:00 am</div>
-          <div style="flex:1;font-size:0.76rem;line-height:1.6;">
-            <div><strong>Pimobendan</strong> — cardíaco</div>
-            <div><strong>Gabapentina</strong> — dolor columna</div>
-            <div><strong>PET L3000</strong> — hepatoprotector</div>
-            <div><strong>Samylin</strong> — hepatoprotector</div>
-            <div><strong>Nebulización Pulmicort</strong> — pulmones</div>
-          </div>
+        <div class="tr-labels">
+          <div class="tr-lbl">D'25</div><div class="tr-lbl">E'26</div><div class="tr-lbl">M12</div>
+          <div class="tr-lbl">M21</div><div class="tr-lbl">M9</div><div class="tr-lbl">M31</div>
+          <div class="tr-lbl">J3</div><div class="tr-lbl">J13</div>
         </div>
-
-        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--blackberry);width:52px;flex-shrink:0;padding-top:2px;">4:30 pm</div>
-          <div style="flex:1;font-size:0.76rem;line-height:1.5;">
-            <span style="background:#eaf1fb;color:var(--blue);border-radius:4px;padding:0.1rem 0.4rem;font-size:0.68rem;font-weight:600;">En ayunas</span>
-            <span style="margin-left:0.4rem;"><strong>Aciflux</strong> — protector gástrico</span>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--blackberry);width:52px;flex-shrink:0;padding-top:2px;">7:00 pm</div>
-          <div style="flex:1;font-size:0.76rem;line-height:1.6;">
-            <div><strong>Pimobendan</strong> — cardíaco</div>
-            <div><strong>Gabapentina</strong> — dolor columna</div>
-            <div><strong>Zemethis</strong> — náuseas/mareo (por Pimobendan)</div>
-            <div><strong>Enroxina</strong> — antibiótico</div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--blackberry);width:52px;flex-shrink:0;padding-top:2px;">9:00 pm</div>
-          <div style="flex:1;font-size:0.76rem;line-height:1.5;">
-            <strong>Nebulización Pulmicort</strong> — pulmones (noche)
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <div class="summary-panel">
-      <div class="section-label">Resumen clínico · junio 2026</div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--red);margin:0 0 0.5rem;">🫀 Diagnóstico cardíaco confirmado</div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>MMVD estadio B2 (ACVIM)</strong> <span>— Enfermedad valvular mitral. Atrio izquierdo dilatado (LA/Ao 1.85). Soplo grado 3/VI. Ecocardio: 01/jun/2026.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Pimobendan 2.5 mg</strong> <span>— 1/2 tableta cada 12h. <strong>Permanente.</strong></span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Maropitant 2 mg</strong> <span>— 1/2 tableta cada 24h de noche. Permanente.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Nebulizaciones Pulmicort</strong> <span>— 1ml + 3ml SF, cada 8h × 10 días, luego solo de noche.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Próxima cita cardiología</strong> <span>— Reevaluar en 8 meses (feb 2027).</span></div></div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--amber);margin:0.9rem 0 0.5rem;">⚠ Monitorear</div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Hígado en recuperación</strong> <span>— ALT 401, ALP 319 (may 31). Daño regenerativo según médico, consistente con ultrasonido de marzo. Recibe hepatoprotector. Verificar enzimas en próximo control.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Anemia no regenerativa persistente</strong> <span>— HCT 34.4% ↓ (jun 13). Sin reticulocitosis. Monitorear con próximo hemograma.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-red"></div><div><strong>Trombocitosis severa: PLT 700 ↑↑↑</strong> <span>— Salto desde 214 (jun 3) a 700 (jun 13). Probablemente reactiva (inflamación / hígado). Vigilar.</span></div></div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin:0.9rem 0 0.5rem;">✅ Resuelto</div>
-      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Infección bacteriana resuelta</strong> <span>— WBC normalizado. Ancylostoma tratado.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-green"></div><div><strong>Enfermedades vectoriales negativos</strong> <span>— Filaria, Lyme, Anaplasma, E. Canis ✅</span></div></div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--amber);margin:0.9rem 0 0.5rem;">⚠ En seguimiento</div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Hígado</strong> <span>— Hepatomegalia + parénquima heterogéneo + enzimas elevadas. Biopsia pendiente.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Daño renal senil</strong> <span>— Quistes corticales y mineralización distrófica bilateral.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Vesícula biliar / Próstata</strong> <span>— Barro biliar e hiperplasia prostática benigna.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-amber"></div><div><strong>Bajar de peso</strong> <span>— Peso 5 kg. Crítico para reducir carga cardíaca.</span></div></div>
-
-      <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--blackberry);margin:0.9rem 0 0.5rem;">🦴 Crónico estructural</div>
-      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Espondilosis vertebral T5-T9</strong> <span>— Grado 2/3 + listesis L5-L6.</span></div></div>
-      <div class="summary-item"><div class="summary-dot dot-blue"></div><div><strong>Traqueomalasia posible</strong> <span>— Tráquea estrecha. Monitorear síntomas respiratorios.</span></div></div>
+    <!-- ── MEDICACIÓN ── -->
+    <div class="r-pane" id="pane-meds">
+      <div class="r-section-title">Medicación activa — julio 2026</div>
+      <div class="med-slot">
+        <div class="med-time">5:00</div>
+        <div class="med-list"><div class="med-tag">En ayunas</div><div class="med-drug"><strong>Aciflux</strong> — protector gástrico</div></div>
+      </div>
+      <div class="med-slot">
+        <div class="med-time">7:00</div>
+        <div class="med-list">
+          <div class="med-drug"><strong>Pimobendan</strong> 2.5 mg — ½ tab · cardíaco</div>
+          <div class="med-drug"><strong>Gabapentina</strong> — dolor columna</div>
+          <div class="med-drug"><strong>PET L3000</strong> — hepatoprotector</div>
+          <div class="med-drug"><strong>Samylin</strong> — hepatoprotector</div>
+          <div class="med-drug"><strong>Nebulización Pulmicort</strong></div>
+        </div>
+      </div>
+      <div class="med-slot">
+        <div class="med-time">16:30</div>
+        <div class="med-list"><div class="med-tag">En ayunas</div><div class="med-drug"><strong>Aciflux</strong> — protector gástrico</div></div>
+      </div>
+      <div class="med-slot">
+        <div class="med-time">19:00</div>
+        <div class="med-list">
+          <div class="med-drug"><strong>Pimobendan</strong> 2.5 mg — ½ tab · cardíaco</div>
+          <div class="med-drug"><strong>Gabapentina</strong> — dolor columna</div>
+          <div class="med-drug"><strong>Zemethis</strong> — náuseas (Pimobendan)</div>
+          <div class="med-drug"><strong>Enroxina</strong> — antibiótico</div>
+        </div>
+      </div>
+      <div class="med-slot">
+        <div class="med-time">21:00</div>
+        <div class="med-list"><div class="med-drug"><strong>Nebulización Pulmicort</strong> — noche</div></div>
+      </div>
     </div>
-  </div>
-</div>
+
+    <!-- ── RESUMEN ── -->
+    <div class="r-pane" id="pane-summary">
+      <div class="r-section-title">Resumen clínico · jun 2026</div>
+
+      <div class="s-group">
+        <div class="s-group-title err">⚠ Problemas activos</div>
+        <div class="s-entry err"><strong>PLT 700 ↑↑↑</strong> — Trombocitosis severa (jun 13). Probable reactiva por hígado. Vigilar en próximo hemograma.</div>
+        <div class="s-entry err"><strong>MMVD Estadio B2</strong> — Insuficiencia mitral, LA/Ao 1.85. Pimobendan permanente. Próx. cardio feb 2027.</div>
+        <div class="s-entry err"><strong>Hígado</strong> — ALT 401, ALP 319 (may 31). Hepatoprotectores activos. Nueva química pendiente.</div>
+      </div>
+
+      <div class="s-group">
+        <div class="s-group-title warn">↓ Monitorear</div>
+        <div class="s-entry warn"><strong>Anemia persistente</strong> — HCT 34.4% (jun 13). No regenerativa. Pedir T4, hierro, SDMA, Ret-HGB en próxima cita.</div>
+        <div class="s-entry warn"><strong>Traqueomalasia posible</strong> — Tráquea estrecha. Monitorear respiración.</div>
+      </div>
+
+      <div class="s-group">
+        <div class="s-group-title ok">✓ Mejoría confirmada</div>
+        <div class="s-entry ok"><strong>Sin edema pulmonar</strong> — Pulmones limpios vs mayo 31. Pimobendan efectivo.</div>
+        <div class="s-entry ok"><strong>WBC normalizado</strong> — Infección bacteriana resuelta. Leucocitosis severa → controlada.</div>
+        <div class="s-entry ok"><strong>Enfermedades vectoriales negativas</strong> — Filaria, Lyme, Anaplasma, Ehrlichia canis ✅</div>
+      </div>
+
+      <div class="s-group">
+        <div class="s-group-title info">🦴 Crónico estructural</div>
+        <div class="s-entry info"><strong>Espondilosis T5-T9 grado 2/3</strong> + listesis L5-L6. Gabapentina permanente.</div>
+        <div class="s-entry info"><strong>Hepatomegalia + parénquima heterogéneo</strong> — Biopsia pendiente según evolución enzimas.</div>
+        <div class="s-entry info"><strong>Quistes renales + calcificaciones</strong> — Degeneración senil. Controlar función renal.</div>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /app -->
 
 <script>
-  let activeFilter = 'all';
-
-  function toggleVisit(el) {
-    const wasActive = el.classList.contains('active');
-    document.querySelectorAll('.visit').forEach(v => v.classList.remove('active'));
-    if (!wasActive) el.classList.add('active');
-  }
-
-  function setFilter(type, btn) {
-    activeFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterVisits();
-  }
-
-  function filterVisits() {
-    const q = document.getElementById('search-visits').value.toLowerCase();
-    document.querySelectorAll('.visit').forEach(v => {
-      const text = v.innerText.toLowerCase();
-      const tags = v.querySelector('.visit-tags') ? v.querySelector('.visit-tags').innerHTML.toLowerCase() : '';
-      const matchesFilter = activeFilter === 'all' || tags.includes('tag-' + activeFilter) || (activeFilter === 'cardio' && tags.includes('cardio'));
-      const matchesSearch = q === '' || text.includes(q);
-      v.classList.toggle('hidden', !(matchesFilter && matchesSearch));
-    });
-  }
-  function showHemo(id, btn) {
-    document.querySelectorAll('.hemo-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.hemo-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-  }
+function openDrawer() {
+  document.getElementById('right-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('right-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function toggleV(el) {
+  const was = el.classList.contains('open');
+  document.querySelectorAll('.visit.open').forEach(v => v.classList.remove('open'));
+  if (!was) el.classList.add('open');
+}
+let activeFilter = 'all';
+function setFilter(t, btn) {
+  activeFilter = t;
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  filterVisits();
+}
+function filterVisits() {
+  const q = document.getElementById('q').value.toLowerCase();
+  document.querySelectorAll('.visit').forEach(v => {
+    const tags = v.dataset.tags || '';
+    const text = v.innerText.toLowerCase();
+    const mf = activeFilter === 'all' || tags.includes(activeFilter);
+    const mq = !q || text.includes(q);
+    v.classList.toggle('hidden', !(mf && mq));
+  });
+}
+function switchTab(id, btn) {
+  document.querySelectorAll('.r-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('on'));
+  document.getElementById('pane-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+function showHemo(id, btn) {
+  document.querySelectorAll('.hc').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('.htab').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
 </script>
 </body>
 </html>
