@@ -501,6 +501,24 @@ body {
 
   /* Topbar: stack on mobile */
   .search-row { flex-wrap: wrap; }
+
+  /* ── Hide stats & alerts on scroll-down, reveal on scroll-up ── */
+  .stat-strip {
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+  }
+  .alert-strip {
+    max-height: 220px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+  }
+  .center.peek-hidden .stat-strip,
+  .center.peek-hidden .alert-strip {
+    max-height: 0;
+    opacity: 0;
+  }
 }
 
 /* XDS TabBar */
@@ -1374,6 +1392,24 @@ function showHemo(id, btn) {
   document.getElementById(id).classList.add('on');
   btn.classList.add('on');
 }
+
+/* ── Hide header on scroll-down, reveal on scroll-up (mobile) ── */
+(function() {
+  var lastY = 0;
+  var center = document.querySelector('.center');
+  var tl = document.querySelector('.tl-wrap');
+  if (!tl || !center) return;
+  tl.addEventListener('scroll', function() {
+    if (window.innerWidth > 768) return;
+    var y = tl.scrollTop;
+    if (y > lastY && y > 60) {
+      center.classList.add('peek-hidden');
+    } else if (y < lastY) {
+      center.classList.remove('peek-hidden');
+    }
+    lastY = y;
+  }, { passive: true });
+})();
 </script>
 </body>
 </html>
