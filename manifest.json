@@ -1,0 +1,12 @@
+{
+  "name": "Simba · Historia Clínica",
+  "short_name": "Simba",
+  "description": "Historia clínica veterinaria de Simba Prado Muñoz",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f2ef",
+  "theme_color": "#542344"
+}
