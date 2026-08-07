@@ -484,12 +484,23 @@ body {
   /* Topbar: stack on mobile */
   .search-row { flex-wrap: wrap; }
 
-  /* ── Hide alerts on scroll-down, reveal on scroll-up ── */
+  /* ── Hide header + alerts on scroll-down, reveal on scroll-up ── */
+  .topbar {
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease, padding .28s ease;
+  }
   .alert-strip {
     max-height: 220px;
     overflow-x: auto;
     overflow-y: hidden;
     transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+  }
+  .center.peek-hidden .topbar {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   .center.peek-hidden .alert-strip {
     max-height: 0;
