@@ -728,7 +728,7 @@ body {
     <div class="topbar">
       <div class="topbar-eyebrow">Historia clínica · Canina · Pomeranian</div>
       <h1>Simba Prado Muñoz</h1>
-      <div class="topbar-meta">Macho · 9 años · Registro dic 2025 – jun 2026</div>
+      <div class="topbar-meta">Macho · 9 años · Registro dic 2025 – ago 2026</div>
       <div class="search-row">
         <div class="xds-input">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -744,7 +744,7 @@ body {
 
     <!-- XDS StatBar -->
     <div class="stat-strip">
-      <div class="sc"><div class="sc-n">11</div><div class="sc-label">Visitas</div></div>
+      <div class="sc"><div class="sc-n">12</div><div class="sc-label">Visitas</div></div>
       <div class="sc"><div class="sc-n">8</div><div class="sc-label">Hemogramas</div></div>
       <div class="sc"><div class="sc-n err">B2</div><div class="sc-label">MMVD cardiopatía</div></div>
       <div class="sc"><div class="sc-n warn" style="font-size:1.1rem;padding-top:.2rem;">34.4%</div><div class="sc-label">HCT · Anemia</div></div>
@@ -771,12 +771,43 @@ body {
       <div class="ac ac-info">
         <div class="ac-chip">Crónico</div>
         <div class="ac-title">MMVD · Estadio B2</div>
-        <div class="ac-sub">LA/Ao 1.85 · Soplo 3/VI<br>Reevaluar feb 2027</div>
+        <div class="ac-sub">LA/Ao 1.68 · Soplo 4/VI<br>Reevaluar dic 2026</div>
       </div>
     </div>
 
     <!-- TIMELINE -->
     <div class="tl-wrap">
+      <!-- V12 -->
+      <div class="visit" data-tags="card" onclick="toggleV(this)">
+        <div class="v-row">
+          <div class="v-badge">12</div>
+          <div class="v-body">
+            <div class="v-title">Ecocardiograma — Control MMVD B2</div>
+            <div class="v-clinic">CardioCaré · Dra. Daniela Portilla Araya</div>
+          </div>
+          <div class="v-right">
+            <div class="v-date">05/08/2026</div>
+            <div class="v-tags"><span class="tag tag-card">Cardio</span></div>
+          </div>
+          <span class="v-chev">›</span>
+        </div>
+        <div class="v-detail">
+          <div class="sub-label">Función sistólica — mejoró con Pimobendan</div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>FE 89%, FA 56%</strong> (vs FE 76%, FA 43% en jun). LVIDs 1.02 cm ↓. Función sistólica normal mejorada.</span></div>
+          <div class="finding f-success"><span class="finding-icon">✓</span><span><strong>LA/Ao 1.68</strong> (vs 1.85 en jun). Atrio izquierdo sigue dilatado pero con menor proporción.</span></div>
+          <div class="sub-label">Disfunción diastólica — nuevo hallazgo</div>
+          <div class="finding f-error"><span class="finding-icon">⚠</span><span><strong>Fallo diastólico grado 1</strong> (patrón transmitral retardado). Función diastólica era normal en jun.</span></div>
+          <div class="finding f-error"><span class="finding-icon">↑</span><span><strong>Regurgitación mitral severa progresó:</strong> vel. 6.33 m/s (↑ desde 5.67), grad. 160.4 mmHg. Soplo 4/VI.</span></div>
+          <div class="sub-label">Diagnóstico e indicaciones</div>
+          <div class="finding f-info"><span class="finding-icon">🫀</span><span><strong>MMVD estadio B2 (ACVIM).</strong> Probabilidad HTP baja. FC 156 bpm · Peso 5.10 kg.</span></div>
+          <div class="finding f-info"><span class="finding-icon">💊</span><span>Mantener <strong>Pimobendan 2.5 mg</strong> c/12h + Maropitant + Nebulizaciones Pulmicort. Se recomienda <strong>broncoscopia</strong>. Reevaluar en 4 meses (dic 2026).</span></div>
+          <div class="doc-buttons">
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1qME9a2hjx4Fx8bZq18PfCg91P3jzmT8Y/view" target="_blank">📄 Informe cardiológico</a>
+            <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1BALeSbpWEbrWHmEZ3Z--8-5cDmJzELqM/view" target="_blank">📄 Datos ecocardiograma</a>
+          </div>
+        </div>
+      </div>
+
       <div class="tl-top">
         <div class="tl-header">Cronología de visitas — más reciente primero</div>
         <div class="pills">
@@ -1322,12 +1353,12 @@ body {
 
     <!-- ── RESUMEN ── -->
     <div class="r-pane" id="pane-summary">
-      <div class="r-section-title">Resumen clínico · jun 2026</div>
+      <div class="r-section-title">Resumen clínico · ago 2026</div>
 
       <div class="s-group">
         <div class="s-group-title err">⚠ Problemas activos</div>
         <div class="s-entry err"><strong>PLT 700 ↑↑↑</strong> — Trombocitosis severa (jun 13). Probable reactiva por hígado. Vigilar en próximo hemograma.</div>
-        <div class="s-entry err"><strong>MMVD Estadio B2</strong> — Insuficiencia mitral, LA/Ao 1.85. Pimobendan permanente. Próx. cardio feb 2027.</div>
+        <div class="s-entry err"><strong>MMVD Estadio B2</strong> — Insuf. mitral 4/VI, LA/Ao 1.68, fallo diastólico grado 1 (ago 5). Pimobendan permanente. Próx. cardio dic 2026.</div>
         <div class="s-entry err"><strong>Hígado</strong> — ALT 401, ALP 319 (may 31). Hepatoprotectores activos. Nueva química pendiente.</div>
       </div>
 
