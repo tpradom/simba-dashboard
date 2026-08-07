@@ -399,12 +399,13 @@ body {
   padding: var(--sp2) var(--sp3);
   border-radius: var(--radius-element);
   margin-bottom: var(--sp1);
-  border-width: 1px; border-style: solid;
+  border: 1px solid var(--color-border);
+  background: #f5f4f2;
 }
-.finding.f-error   { background: var(--color-bg-error);   border-color: rgba(220,38,38,.15);  color: var(--color-text-error); }
-.finding.f-warning { background: var(--color-bg-warning); border-color: rgba(202,138,4,.15);  color: var(--color-text-warning); }
-.finding.f-success { background: var(--color-bg-success); border-color: rgba(22,163,74,.15);  color: var(--color-text-success); }
-.finding.f-info    { background: var(--color-bg-info);    border-color: rgba(37,99,235,.15);  color: var(--color-text-info); }
+.finding.f-error   { border-left: 3px solid rgba(220,38,38,.75); color: var(--color-text-error); }
+.finding.f-warning { border-left: 3px solid rgba(202,138,4,.75); color: var(--color-text-warning); }
+.finding.f-success { border-left: 3px solid rgba(22,163,74,.75); color: var(--color-text-success); }
+.finding.f-info    { border-left: 3px solid rgba(37,99,235,.75); color: var(--color-text-info); }
 .finding-icon { font-weight: 700; flex-shrink: 0; font-size: .8rem; line-height: 1.45; }
 
 /* XDS Button — ghost/outline style */
