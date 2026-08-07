@@ -1348,7 +1348,19 @@ function closeDrawer() {
 function toggleV(el) {
   const was = el.classList.contains('open');
   document.querySelectorAll('.visit.open').forEach(v => v.classList.remove('open'));
-  if (!was) el.classList.add('open');
+  if (!was) {
+    el.classList.add('open');
+    setTimeout(function() {
+      var tl = document.querySelector('.tl-wrap');
+      if (!tl) return;
+      var tlRect = tl.getBoundingClientRect();
+      var elRect = el.getBoundingClientRect();
+      var gap = 10;
+      if (elRect.top < tlRect.top + gap) {
+        tl.scrollBy({ top: elRect.top - tlRect.top - gap, behavior: 'smooth' });
+      }
+    }, 20);
+  }
 }
 let activeFilter = 'all';
 function setFilter(t, btn) {
