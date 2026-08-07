@@ -192,34 +192,7 @@ body {
 }
 
 /* Stat strip */
-.stat-strip {
-  display: flex;
-  background: var(--color-background-surface);
-  border-bottom: 1px solid var(--color-border);
-  flex-shrink: 0;
-}
-.sc {
-  flex: 1;
-  padding: var(--sp3) var(--sp4);
-  border-right: 1px solid var(--color-border);
-}
-.sc:last-child { border-right: none; }
-.sc-n {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: var(--color-text-primary);
-}
-.sc-n.err   { color: var(--color-error); }
-.sc-n.warn  { color: var(--color-warning); font-size: 1rem; padding-top: .35rem; }
-.sc-label {
-  font-size: .59rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--color-text-tertiary);
-  margin-top: var(--sp1);
-}
+
 
 /* Alert cards — XDS AlertCard */
 .alert-strip {
@@ -511,19 +484,13 @@ body {
   /* Topbar: stack on mobile */
   .search-row { flex-wrap: wrap; }
 
-  /* ── Hide stats & alerts on scroll-down, reveal on scroll-up ── */
-  .stat-strip {
-    max-height: 100px;
-    overflow: hidden;
-    transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease;
-  }
+  /* ── Hide alerts on scroll-down, reveal on scroll-up ── */
   .alert-strip {
     max-height: 220px;
     overflow-x: auto;
     overflow-y: hidden;
     transition: max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease;
   }
-  .center.peek-hidden .stat-strip,
   .center.peek-hidden .alert-strip {
     max-height: 0;
     opacity: 0;
@@ -744,14 +711,6 @@ body {
     </div>
 
     <!-- XDS StatBar -->
-    <div class="stat-strip">
-      <div class="sc"><div class="sc-n">12</div><div class="sc-label">Visitas</div></div>
-      <div class="sc"><div class="sc-n">8</div><div class="sc-label">Hemogramas</div></div>
-      <div class="sc"><div class="sc-n err">B2</div><div class="sc-label">MMVD cardiopatía</div></div>
-      <div class="sc"><div class="sc-n warn" style="font-size:1.1rem;padding-top:.2rem;">34.4%</div><div class="sc-label">HCT · Anemia</div></div>
-      <div class="sc"><div class="sc-n err">700</div><div class="sc-label">PLT · Trombocitosis</div></div>
-    </div>
-
     <!-- XDS AlertCards strip -->
     <div class="alert-strip">
       <div class="ac ac-error">
