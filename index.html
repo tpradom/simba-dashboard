@@ -737,6 +737,18 @@ body {
 
     <!-- TIMELINE -->
     <div class="tl-wrap">
+      <div class="tl-top">
+        <div class="tl-header">Cronología de visitas — más reciente primero</div>
+        <div class="pills">
+          <button class="pill on"   onclick="setFilter('all',this)">Todas</button>
+          <button class="pill"      onclick="setFilter('hemo',this)">Hemo</button>
+          <button class="pill"      onclick="setFilter('quim',this)">Química</button>
+          <button class="pill"      onclick="setFilter('rx',this)">Rx</button>
+          <button class="pill"      onclick="setFilter('us',this)">US</button>
+          <button class="pill"      onclick="setFilter('card',this)">Cardio</button>
+        </div>
+      </div>
+
       <!-- V12 -->
       <div class="visit" data-tags="card" onclick="toggleV(this)">
         <div class="v-row">
@@ -765,18 +777,6 @@ body {
             <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1qME9a2hjx4Fx8bZq18PfCg91P3jzmT8Y/view" target="_blank">📄 Informe cardiológico</a>
             <a class="doc-btn doc-btn-pdf" href="https://drive.google.com/file/d/1BALeSbpWEbrWHmEZ3Z--8-5cDmJzELqM/view" target="_blank">📄 Datos ecocardiograma</a>
           </div>
-        </div>
-      </div>
-
-      <div class="tl-top">
-        <div class="tl-header">Cronología de visitas — más reciente primero</div>
-        <div class="pills">
-          <button class="pill on"   onclick="setFilter('all',this)">Todas</button>
-          <button class="pill"      onclick="setFilter('hemo',this)">Hemo</button>
-          <button class="pill"      onclick="setFilter('quim',this)">Química</button>
-          <button class="pill"      onclick="setFilter('rx',this)">Rx</button>
-          <button class="pill"      onclick="setFilter('us',this)">US</button>
-          <button class="pill"      onclick="setFilter('card',this)">Cardio</button>
         </div>
       </div>
 
